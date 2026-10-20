@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corporate Partnerships — PlacementAI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Admin Console</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name">Dr. Rajesh Varma</div>
+        <span class="sidebar-user-role">Head, Placement Cell</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Admin Operations</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/admin/dashboard}" class="sidebar-link">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="students.html" th:href="@{/admin/students}" class="sidebar-link">Students</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="recruiters.html" th:href="@{/admin/recruiters}" class="sidebar-link">Recruiters</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="companies.html" th:href="@{/admin/companies}" class="sidebar-link active">Companies</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/admin/jobs}" class="sidebar-link">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applications.html" th:href="@{/admin/applications}" class="sidebar-link">Applications</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/admin/interviews}" class="sidebar-link">Interviews</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="feedback.html" th:href="@{/admin/feedback}" class="sidebar-link">Feedback</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="analytics.html" th:href="@{/admin/analytics}" class="sidebar-link">Analytics</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="../auth/login.html" th:href="@{/login}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Corporate Partnership Management</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar">RV</div>
+            <div class="user-info">
+              <span class="user-display-name">Dr. Rajesh Varma</span>
+              <span class="user-display-role">Institutional Administrator</span>
+            </div>
+          </div>
+          <a href="../auth/login.html" th:href="@{/login}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Partner Organizations &amp; Approvals</h1>
+            <p>Authorize enterprise hiring partners, validate campus recruitment eligibility, and audit posted drive parameters.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Company Name</th>
+                    <th>Industry Sector</th>
+                    <th>Corporate Headquarters</th>
+                    <th>Official Website</th>
+                    <th>Partnership Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:if="${#lists.isEmpty(companies)}">
+                    <td colspan="6" style="text-align: center; padding: 2rem; color: #64748b;">
+                      No partner companies recorded in MongoDB yet.
+                    </td>
+                  </tr>
+                  <tr th:each="comp : ${companies}">
+                    <td><strong th:text="${comp.name}">Microsoft Corporation</strong></td>
+                    <td th:text="${comp.industry != null ? comp.industry : 'Technology'}">Cloud Computing &amp; Enterprise Software</td>
+                    <td th:text="${comp.headquarters != null ? comp.headquarters : 'Corporate HQ'}">Bangalore</td>
+                    <td>
+                      <a th:if="${comp.website != null}" th:href="${comp.website}" target="_blank" th:text="${comp.website}" style="color: var(--color-primary); font-size: var(--font-size-xs);">Website</a>
+                      <span th:unless="${comp.website != null}">N/A</span>
+                    </td>
+                    <td>
+                      <span class="badge" th:classappend="${comp.verified ? 'badge-selected' : 'badge-rejected'}"
+                            th:text="${comp.verified ? 'Active Verified' : 'Pending Verification'}">Active Verified</span>
+                    </td>
+                    <td>
+                      <div class="table-actions">
+                        <a th:href="@{/admin/jobs}" class="btn btn-secondary btn-sm">View Drives</a>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Institutional Administrator Console</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central Feedback Hub — PlacementAI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Admin Console</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name">Dr. Rajesh Varma</div>
+        <span class="sidebar-user-role">Head, Placement Cell</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Admin Operations</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/admin/dashboard}" class="sidebar-link">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="students.html" th:href="@{/admin/students}" class="sidebar-link">Students</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="recruiters.html" th:href="@{/admin/recruiters}" class="sidebar-link">Recruiters</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="companies.html" th:href="@{/admin/companies}" class="sidebar-link">Companies</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/admin/jobs}" class="sidebar-link">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applications.html" th:href="@{/admin/applications}" class="sidebar-link">Applications</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/admin/interviews}" class="sidebar-link">Interviews</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="feedback.html" th:href="@{/admin/feedback}" class="sidebar-link active">Feedback</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="analytics.html" th:href="@{/admin/analytics}" class="sidebar-link">Analytics</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="../auth/login.html" th:href="@{/login}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Confidential Feedback Hub</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar">RV</div>
+            <div class="user-info">
+              <span class="user-display-name">Dr. Rajesh Varma</span>
+              <span class="user-display-role">Institutional Administrator</span>
+            </div>
+          </div>
+          <a href="../auth/login.html" th:href="@{/login}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Master Interview Feedback &amp; Ratings</h1>
+            <p>University-wide confidential student evaluations of corporate interview panels, assessment fairness, and drive logistics.</p>
+          </div>
+        </div>
+
+        <!-- Security Notice Banner -->
+        <div class="alert alert-warning flex-between" style="margin-bottom: var(--space-6);">
+          <span>Security Protocol: Access to this centralized feedback repository is strictly restricted to university administrators. Recruiters and peer candidates are blocked from this view.</span>
+          <span class="badge badge-shortlisted">Admin Clearance Only</span>
+        </div>
+
+        <!-- Multi-Attribute Filter Card -->
+        <div class="card" style="margin-bottom: var(--space-6);">
+          <div class="card-body" style="padding: var(--space-4) var(--space-6);">
+            <form method="get" th:action="@{/admin/feedback}" id="adminFeedbackFilterForm">
+              <div class="form-row">
+                <div class="form-col-4">
+                  <div class="form-group" style="margin-bottom: var(--space-2);">
+                    <label class="form-label" style="font-size: var(--font-size-xs);" for="adminFeedbackDeptFilter">Department:</label>
+                    <select class="form-control" id="adminFeedbackDeptFilter" name="department">
+                      <option value="" th:selected="${selectedDept == null or selectedDept == '' or selectedDept == 'ALL'}">All Departments</option>
+                      <option value="CSE" th:selected="${selectedDept == 'CSE'}">CSE - Computer Science &amp; Engineering</option>
+                      <option value="IT" th:selected="${selectedDept == 'IT'}">IT - Information Technology</option>
+                      <option value="CE" th:selected="${selectedDept == 'CE'}">CE - Computer Engineering</option>
+                      <option value="ECE" th:selected="${selectedDept == 'ECE'}">ECE - Electronics &amp; Communication</option>
+                      <option value="EEE" th:selected="${selectedDept == 'EEE'}">EEE - Electrical &amp; Electronics</option>
+                      <option value="Mechanical" th:selected="${selectedDept == 'Mechanical'}">Mechanical Engineering</option>
+                      <option value="Civil" th:selected="${selectedDept == 'Civil'}">Civil Engineering</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-col-4">
+                  <div class="form-group" style="margin-bottom: var(--space-2);">
+                    <label class="form-label" style="font-size: var(--font-size-xs);" for="adminFeedbackCompanyFilter">Company:</label>
+                    <select class="form-control" id="adminFeedbackCompanyFilter" name="company">
+                      <option value="" th:selected="${selectedCompany == null or selectedCompany == ''}">All Companies</option>
+                      <option value="Microsoft" th:selected="${selectedCompany == 'Microsoft'}">Microsoft</option>
+                      <option value="Google" th:selected="${selectedCompany == 'Google'}">Google</option>
+                      <option value="Amazon" th:selected="${selectedCompany == 'Amazon'}">Amazon Web Services</option>
+                      <option value="Oracle" th:selected="${selectedCompany == 'Oracle'}">Oracle</option>
+                      <option value="TCS" th:selected="${selectedCompany == 'TCS'}">TCS</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-col-4">
+                  <div class="form-group" style="margin-bottom: var(--space-2);">
+                    <label class="form-label" style="font-size: var(--font-size-xs);" for="adminFeedbackRatingFilter">Experience Rating:</label>
+                    <select class="form-control" id="adminFeedbackRatingFilter" name="rating">
+                      <option value="" th:selected="${selectedRating == null or selectedRating == ''}">All Ratings (1 - 5)</option>
+                      <option value="5" th:selected="${selectedRating == '5'}">5 - Excellent</option>
+                      <option value="4" th:selected="${selectedRating == '4'}">4 - Good</option>
+                      <option value="3" th:selected="${selectedRating == '3'}">3 - Satisfactory</option>
+                      <option value="2" th:selected="${selectedRating == '2'}">2 - Poor</option>
+                      <option value="1" th:selected="${selectedRating == '1'}">1 - Very Poor</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="flex-between" style="margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--color-border); flex-wrap: wrap; gap: var(--space-3); align-items: center;">
+                <div class="flex" style="gap: var(--space-2); align-items: center;">
+                  <button type="submit" class="btn btn-primary btn-sm" id="adminFeedbackFilterBtn" style="padding: 0.5rem 1.25rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    Filter
+                  </button>
+                  <a th:href="@{/admin/feedback}" class="btn btn-secondary btn-sm" id="adminFeedbackResetBtn" style="text-decoration: none; padding: 0.5rem 1rem;">Reset</a>
+                </div>
+                <div>
+                  <input type="text" class="form-control" id="adminFeedbackSearch" name="query" th:value="${searchQuery}" placeholder="Search feedback by candidate or keyword..." style="width: 280px;">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Feedback Roster Table Card -->
+        <div class="card">
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table table-striped" id="adminFeedbackMasterTable">
+                <thead>
+                  <tr>
+                    <th>Student Name</th>
+                    <th>Department</th>
+                    <th>Company</th>
+                    <th>Position</th>
+                    <th>Interview Date</th>
+                    <th>Rating</th>
+                    <th>Candidate Evaluation Comments</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:if="${#lists.isEmpty(feedbacks)}">
+                    <td colspan="8" style="text-align: center; padding: 2rem; color: #64748b;">
+                      No interview experience feedback recorded in MongoDB yet.
+                    </td>
+                  </tr>
+                  <tr id="noAdminFeedbackMatchRow" style="display: none;">
+                    <td colspan="8" style="text-align: center; padding: 2.5rem; color: #64748b;">
+                      <div style="font-weight: 600; font-size: var(--font-size-base); margin-bottom: 6px;">No feedback records match your filter criteria.</div>
+                      <div style="font-size: var(--font-size-xs); margin-bottom: 12px;">Try selecting different options or clear search parameters.</div>
+                      <a th:href="@{/admin/feedback}" class="btn btn-secondary btn-sm" style="text-decoration: none;">Reset All Filters</a>
+                    </td>
+                  </tr>
+                  <tr class="admin-feedback-row" th:each="fb : ${feedbacks}"
+                      th:data-dept="${fb.student != null ? fb.student.department : (fb.application != null && fb.application.student != null ? fb.application.student.department : '')}"
+                      th:data-roll="${fb.student != null ? fb.student.rollNumber : (fb.application != null && fb.application.student != null ? fb.application.student.rollNumber : '')}"
+                      th:data-company="${fb.companyOrDrive}"
+                      th:data-rating="${fb.rating}">
+                    <td>
+                      <strong th:text="${fb.authorName}">Aarav Sharma</strong>
+                      <span class="table-subtext" th:text="${fb.submittedByRole}">STUDENT</span>
+                    </td>
+                    <td th:text="${fb.student != null ? fb.student.department : (fb.application != null && fb.application.student != null ? fb.application.student.department : 'General')}">CSE</td>
+                    <td th:text="${fb.companyOrDrive}">Oracle Financial Services</td>
+                    <td th:text="${fb.application != null && fb.application.job != null ? fb.application.job.title : 'Interview Drive'}">Server Engineer</td>
+                    <td th:text="${fb.createdAt != null ? #temporals.format(fb.createdAt, 'dd MMM yyyy') : 'Recent'}">10 Aug 2026</td>
+                    <td>
+                      <span class="badge"
+                            th:classappend="${fb.rating >= 4} ? 'badge-selected' : (${fb.rating == 3} ? 'badge-review' : 'badge-rejected')"
+                            th:text="${fb.rating + ' / 5'}">5 / 5</span>
+                    </td>
+                    <td style="max-width: 320px; font-size: var(--font-size-xs); color: var(--color-text-secondary);"
+                        th:text="${fb.feedbackText}">
+                      In-depth questions on concurrency, database locking mechanisms, and Java garbage collection tunings. Very thorough and fair process.
+                    </td>
+                    <td>
+                      <span class="btn btn-secondary btn-sm" style="pointer-events: none;">Logged</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Institutional Administrator Console</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js?v=2.4}"></script>
+</body>
+</html>

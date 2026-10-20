@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recruiter Dashboard — PlacementAI</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <!-- Recruiter Sidebar -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Recruiter Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name" th:text="${recruiter != null && recruiter.user != null ? recruiter.user.fullName : (recruiterName != null ? recruiterName : 'Recruiter')}">Recruiter Name</div>
+        <span class="sidebar-user-role" th:text="${company != null ? ('Recruiter • ' + company.name) : (recruiter != null && recruiter.company != null ? ('Recruiter • ' + recruiter.company.name) : 'Recruiter')}">Recruiter &bull; Corporate Partner</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Recruiter Menu</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/recruiter/dashboard}" class="sidebar-link active">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="profile.html" th:href="@{/recruiter/profile}" class="sidebar-link">Company Profile</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/recruiter/jobs}" class="sidebar-link">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="create-job.html" th:href="@{/recruiter/create-job}" class="sidebar-link">Create Job</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applicants.html" th:href="@{/recruiter/applicants}" class="sidebar-link">Applicants</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/recruiter/interviews}" class="sidebar-link">Interviews</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="/logout" th:href="@{/logout}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <!-- Top Navbar -->
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Recruiter Portal</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar" th:text="${recruiter != null && recruiter.user != null && recruiter.user.fullName != null && !recruiter.user.fullName.isEmpty() ? recruiter.user.fullName.substring(0, 1).toUpperCase() : 'R'}">R</div>
+            <div class="user-info">
+              <span class="user-display-name" th:text="${recruiter != null && recruiter.user != null ? recruiter.user.fullName : (recruiterName != null ? recruiterName : 'Recruiter')}">Recruiter Name</span>
+              <span class="user-display-role" th:text="${recruiter != null && recruiter.designation != null ? recruiter.designation : 'Campus Talent Partner'}">Lead Campus Talent Partner</span>
+            </div>
+          </div>
+          <a href="/logout" th:href="@{/logout}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="app-content">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Recruitment Operations Dashboard</h1>
+            <p>Monitor live campus hiring drives, screen applicant pipelines, and manage scheduled interview assessments.</p>
+          </div>
+          <div class="page-actions">
+            <a href="create-job.html" th:href="@{/recruiter/create-job}" class="btn btn-primary">Post New Drive</a>
+            <a href="applicants.html" th:href="@{/recruiter/applicants}" class="btn btn-secondary">Screen Candidates</a>
+          </div>
+        </div>
+
+        <!-- Access Denied Banner -->
+        <div class="alert alert-error flex-between" th:if="${param.accessDenied != null}" style="margin-bottom: var(--space-6);">
+          <span>Access Restricted: You do not have authorization to access Administrator or Student portals. Your active role is RECRUITER.</span>
+          <button type="button" class="alert-dismiss-btn" style="background:none;border:none;cursor:pointer;color:inherit;font-weight:bold;">Dismiss</button>
+        </div>
+
+        <!-- Vertical Summary Metric Items -->
+        <div class="dashboard-items-vertical">
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Active Jobs</div>
+              <div class="stat-helper">Live campus recruitment campaigns</div>
+            </div>
+            <div class="stat-value" th:text="${myJobsCount != null ? myJobsCount : 0}">0</div>
+          </div>
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Total Applicants</div>
+              <div class="stat-helper">Across all departments</div>
+            </div>
+            <div class="stat-value" th:text="${applicantCount != null ? applicantCount : 0}">0</div>
+          </div>
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Shortlisted Candidates</div>
+              <div class="stat-helper">Met AI screening threshold</div>
+            </div>
+            <div class="stat-value" th:text="${shortlistedCount != null ? shortlistedCount : 0}">0</div>
+          </div>
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Upcoming Interviews</div>
+              <div class="stat-helper">Technical assessments scheduled</div>
+            </div>
+            <div class="stat-value" th:text="${upcomingInterviewsCount != null ? upcomingInterviewsCount : 0}">0</div>
+          </div>
+        </div>
+
+        <!-- Recent Applications Table -->
+        <div class="card" style="margin-bottom: var(--space-8);">
+          <div class="card-header">
+            <h3>Recent Applications</h3>
+            <a href="applicants.html" th:href="@{/recruiter/applicants}" class="btn btn-secondary btn-sm">View All Applicants</a>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Candidate</th>
+                    <th>Position</th>
+                    <th>Applied Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:if="${#lists.isEmpty(recentApplicants)}">
+                    <td colspan="5" style="text-align: center; color: var(--color-text-muted); padding: var(--space-4);">No applicants recorded for your job postings yet.</td>
+                  </tr>
+                  <tr th:each="app : ${recentApplicants}">
+                    <td>
+                      <strong th:text="${app.student.user != null ? app.student.user.fullName : 'Candidate'}">Aarav Sharma</strong>
+                      <span class="table-subtext" th:text="${app.student.department + ' • CGPA: ' + app.student.cgpa}">CSE &bull; CGPA: 8.92</span>
+                    </td>
+                    <td th:text="${app.job.title}">Software Engineer</td>
+                    <td th:text="${#temporals.format(app.appliedAt, 'dd MMM yyyy')}">14 Aug 2026</td>
+                    <td>
+                      <span class="badge"
+                            th:classappend="${app.status == 'OFFERED' or app.status == 'ACCEPTED'} ? 'badge-selected' : (${app.status == 'SHORTLISTED' or app.status == 'TECHNICAL_ROUND'} ? 'badge-shortlisted' : (${app.status == 'REJECTED'} ? 'badge-rejected' : 'badge-review'))"
+                            th:text="${app.status}">Shortlisted</span>
+                    </td>
+                    <td>
+                      <div class="table-actions">
+                        <a href="applicants.html" th:href="@{/recruiter/applicants(jobId=${app.job.id})}" class="btn btn-secondary btn-sm">Review</a>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Interviews Table Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Upcoming Interviews</h3>
+            <a href="interviews.html" th:href="@{/recruiter/interviews}" class="btn btn-secondary btn-sm">Interview Schedule</a>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Candidate</th>
+                    <th>Position</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:if="${#lists.isEmpty(upcomingInterviews)}">
+                    <td colspan="6" style="text-align: center; color: var(--color-text-muted); padding: var(--space-4);">No upcoming interviews scheduled yet.</td>
+                  </tr>
+                  <tr th:each="slot : ${upcomingInterviews}">
+                    <td>
+                      <strong th:text="${slot.student != null && slot.student.user != null ? slot.student.user.fullName : 'Candidate'}">Aarav Sharma</strong>
+                      <span class="table-subtext" th:text="${slot.student != null && slot.student.user != null ? slot.student.user.email : ''}">aarav.sharma@university.edu</span>
+                    </td>
+                    <td th:text="${slot.job != null ? slot.job.title : 'Software Engineer'}">Software Engineer</td>
+                    <td th:text="${slot.scheduledTime != null ? #temporals.format(slot.scheduledTime, 'dd MMM yyyy') : 'TBD'}">12 Sep 2026</td>
+                    <td th:text="${slot.scheduledTime != null ? #temporals.format(slot.scheduledTime, 'hh:mm a') : 'TBD'}">10:30 AM</td>
+                    <td>
+                      <span class="badge badge-scheduled" th:text="${slot.status != null ? slot.status : 'Confirmed'}">Confirmed</span>
+                    </td>
+                    <td>
+                      <a th:href="${slot.meetingLinkOrVenue != null && slot.meetingLinkOrVenue.startsWith('http') ? slot.meetingLinkOrVenue : '#'}" target="_blank" class="btn btn-primary btn-sm">Start Meeting</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Recruiter Enterprise Portal</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>

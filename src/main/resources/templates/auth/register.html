@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register — AI-Powered Placement Management System</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Core and Authentication CSS Stylesheets -->
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/auth.css" th:href="@{/css/auth.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body class="auth-page">
+  <div class="auth-container auth-container-wide">
+    <!-- University / Portal Header Branding -->
+    <div class="auth-brand">
+      <div class="auth-brand-badge">PM</div>
+      <h1 class="auth-brand-title">PlacementAI</h1>
+      <div class="auth-brand-subtitle">University Training &amp; Placement Portal</div>
+    </div>
+
+    <!-- Registration Card -->
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <h2 class="auth-card-title" id="registerCardTitle">Create an Account</h2>
+        <p class="auth-card-subtitle" id="registerCardSubtitle">Register to begin participating in campus placement drives and recruitment activities.</p>
+      </div>
+
+      <!-- Error Alert -->
+      <div class="alert alert-danger" th:if="${param.error != null and param.error[0] == 'exists'}" style="margin-bottom: var(--space-4);">
+        An account with this email address already exists. Please sign in or use a different email.
+      </div>
+
+      <!-- Registration Form -->
+      <form th:action="@{/register}" method="post" id="registerForm">
+        <!-- Role Selection -->
+        <div class="form-group">
+          <label class="form-label required">I am registering as</label>
+          <div class="auth-role-group">
+            <div class="auth-role-option">
+              <input type="radio" id="roleStudent" name="role" value="STUDENT" class="auth-role-input" checked>
+              <label for="roleStudent" class="auth-role-label">Student</label>
+            </div>
+            <div class="auth-role-option">
+              <input type="radio" id="roleRecruiter" name="role" value="RECRUITER" class="auth-role-input">
+              <label for="roleRecruiter" class="auth-role-label">Recruiter</label>
+            </div>
+            <div class="auth-role-option">
+              <input type="radio" id="roleAdmin" name="role" value="ADMIN" class="auth-role-input">
+              <label for="roleAdmin" class="auth-role-label">Admin</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Personal Information Row -->
+        <div class="form-row">
+          <div class="form-col-6">
+            <div class="form-group">
+              <label class="form-label required" for="fullName">Full Name</label>
+              <input type="text" id="fullName" name="fullName" class="form-control" placeholder="e.g. Sameer Sharma" required autocomplete="name">
+            </div>
+          </div>
+          <div class="form-col-6">
+            <div class="form-group">
+              <label class="form-label required" for="email" id="emailLabel">Institutional Email</label>
+              <input type="email" id="email" name="email" class="form-control" placeholder="user@univ.edu" required autocomplete="email">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--space-4);">
+          <label class="form-label required" for="phone">Contact Phone Number</label>
+          <input type="tel" id="phone" name="phone" class="form-control" placeholder="+91 98765 43210" required autocomplete="tel">
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- 1. STUDENT-SPECIFIC FIELDS                                     -->
+        <!-- ============================================================== -->
+        <div id="studentFieldsSection" class="role-section">
+          <div style="font-weight: 600; font-size: var(--font-size-sm); color: var(--color-primary); margin-bottom: var(--space-3); border-bottom: 1px dashed var(--color-border); padding-bottom: 4px;">
+            Academic &amp; Department Credentials
+          </div>
+          <div class="form-row">
+            <div class="form-col-6">
+              <div class="form-group">
+                <label class="form-label required" for="department">Academic Department</label>
+                <select id="department" name="department" class="form-control">
+                  <option value="Computer Science & Engineering" selected>CSE - Computer Science &amp; Engineering</option>
+                  <option value="Information Technology">IT - Information Technology</option>
+                  <option value="Electronics & Communication">ECE - Electronics &amp; Communication</option>
+                  <option value="Electrical & Electronics">EEE - Electrical &amp; Electronics</option>
+                  <option value="Mechanical Engineering">Mechanical Engineering</option>
+                  <option value="Civil Engineering">Civil Engineering</option>
+                  <option value="Other Disciplines">Other Disciplines</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-col-6">
+              <div class="form-group">
+                <label class="form-label required" for="rollNumber">University Roll Number</label>
+                <input type="text" id="rollNumber" name="rollNumber" class="form-control" placeholder="e.g. 2022CSE041">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col-6">
+              <div class="form-group">
+                <label class="form-label required" for="cgpa">Current CGPA</label>
+                <input type="number" id="cgpa" name="cgpa" class="form-control" placeholder="0.00 - 10.00" step="0.01" min="0" max="10">
+              </div>
+            </div>
+            <div class="form-col-6">
+              <div class="form-group">
+                <label class="form-label" for="batchYear">Graduation Year</label>
+                <input type="number" id="batchYear" name="batchYear" class="form-control" value="2026" min="2024" max="2030">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- 2. RECRUITER-SPECIFIC FIELDS                                   -->
+        <!-- ============================================================== -->
+        <div id="recruiterFieldsSection" class="role-section" style="display: none;">
+          <div style="font-weight: 600; font-size: var(--font-size-sm); color: var(--color-primary); margin-bottom: var(--space-3); border-bottom: 1px dashed var(--color-border); padding-bottom: 4px;">
+            Corporate Hiring Organization &amp; Designation
+          </div>
+          <div class="form-row">
+            <div class="form-col-6">
+              <div class="form-group">
+                <label class="form-label required" for="companyName">Company / Organization</label>
+                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="e.g. Microsoft, Google, Amazon">
+              </div>
+            </div>
+            <div class="form-col-6">
+              <div class="form-group">
+                <label class="form-label required" for="recruiterDesignation">Corporate Designation</label>
+                <input type="text" id="recruiterDesignation" name="recruiterDesignation" class="form-control" placeholder="e.g. Lead Campus Recruiter">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col-6">
+              <div class="form-group">
+                <label class="form-label" for="companyWebsite">Official Corporate Website</label>
+                <input type="url" id="companyWebsite" name="companyWebsite" class="form-control" placeholder="https://careers.company.com">
+              </div>
+            </div>
+            <div class="form-col-6">
+              <div class="form-group">
+                <label class="form-label" for="companyLocation">Primary Development Hub</label>
+                <input type="text" id="companyLocation" name="companyLocation" class="form-control" placeholder="e.g. Bangalore, Hyderabad">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- 3. ADMIN-SPECIFIC FIELDS                                       -->
+        <!-- ============================================================== -->
+        <div id="adminFieldsSection" class="role-section" style="display: none;">
+          <div style="font-weight: 600; font-size: var(--font-size-sm); color: var(--color-primary); margin-bottom: var(--space-3); border-bottom: 1px dashed var(--color-border); padding-bottom: 4px;">
+            Institutional Placement Cell Authority
+          </div>
+          <div class="form-row">
+            <div class="form-col-6">
+              <div class="form-group">
+                <label class="form-label required" for="adminDesignation">Administrative Title</label>
+                <input type="text" id="adminDesignation" name="adminDesignation" class="form-control" placeholder="e.g. Dean of Placement &amp; Corporate Relations">
+              </div>
+            </div>
+            <div class="form-col-6">
+              <div class="form-group">
+                <label class="form-label required" for="employeeId">Faculty / Staff ID</label>
+                <input type="text" id="employeeId" name="employeeId" class="form-control" placeholder="e.g. EMP-TP-108">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="officeDepartment">University Placement Office / Cell</label>
+            <input type="text" id="officeDepartment" name="officeDepartment" class="form-control" value="Central Training & Placement Cell (T&P)">
+          </div>
+        </div>
+
+        <!-- Password and Confirm Password Row -->
+        <div class="form-row">
+          <div class="form-col-6">
+            <div class="form-group">
+              <label class="form-label required" for="password">Account Password</label>
+              <input type="password" id="password" name="password" class="form-control" placeholder="Create password" required autocomplete="new-password">
+              <span class="form-helper">Minimum 8 characters.</span>
+            </div>
+          </div>
+          <div class="form-col-6">
+            <div class="form-group">
+              <label class="form-label required" for="confirmPassword">Confirm Password</label>
+              <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Re-enter password" required autocomplete="new-password">
+            </div>
+          </div>
+        </div>
+
+        <!-- Terms Agreement -->
+        <div class="form-check" style="margin-top: var(--space-2); margin-bottom: var(--space-6);">
+          <input type="checkbox" id="termsAgreement" name="agree" class="form-check-input" required>
+          <label for="termsAgreement" class="form-check-label">I certify that all information provided is accurate and complies with university placement policies.</label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitRegisterBtn">
+          Create Account
+        </button>
+      </form>
+
+      <!-- Sign In Link -->
+      <div class="auth-card-footer">
+        <span>Already have an account? </span>
+        <a href="login.html" th:href="@{/login}">Sign In</a>
+      </div>
+    </div>
+
+    <!-- Institutional Footer Note -->
+    <div class="auth-portal-footer">
+      <span>Official University Placement Management System &bull; Secure Institutional Access</span>
+    </div>
+  </div>
+
+  <!-- Dynamic Role Fields Switching Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var roleRadios = document.querySelectorAll('input[name="role"]');
+      var studentSection = document.getElementById('studentFieldsSection');
+      var recruiterSection = document.getElementById('recruiterFieldsSection');
+      var adminSection = document.getElementById('adminFieldsSection');
+      var emailLabel = document.getElementById('emailLabel');
+      var emailInput = document.getElementById('email');
+      var titleEl = document.getElementById('registerCardTitle');
+      var subtitleEl = document.getElementById('registerCardSubtitle');
+
+      var rollInput = document.getElementById('rollNumber');
+      var cgpaInput = document.getElementById('cgpa');
+      var companyInput = document.getElementById('companyName');
+      var recruiterDesigInput = document.getElementById('recruiterDesignation');
+      var adminDesigInput = document.getElementById('adminDesignation');
+      var employeeIdInput = document.getElementById('employeeId');
+
+      function updateRoleFields(role) {
+        if (role === 'RECRUITER') {
+          studentSection.style.display = 'none';
+          recruiterSection.style.display = 'block';
+          adminSection.style.display = 'none';
+
+          emailLabel.textContent = 'Corporate Work Email';
+          emailInput.placeholder = 'recruiter@company.com';
+          titleEl.textContent = 'Recruiter Registration';
+          subtitleEl.textContent = 'Register your organization to conduct campus recruitment drives and evaluate top talent.';
+
+          if (rollInput) rollInput.required = false;
+          if (cgpaInput) cgpaInput.required = false;
+          if (companyInput) companyInput.required = true;
+          if (recruiterDesigInput) recruiterDesigInput.required = true;
+          if (adminDesigInput) adminDesigInput.required = false;
+          if (employeeIdInput) employeeIdInput.required = false;
+        } else if (role === 'ADMIN') {
+          studentSection.style.display = 'none';
+          recruiterSection.style.display = 'none';
+          adminSection.style.display = 'block';
+
+          emailLabel.textContent = 'University Administrator Email';
+          emailInput.placeholder = 'dean@univ.edu';
+          titleEl.textContent = 'Administrator Registration';
+          subtitleEl.textContent = 'Register authorized University Training & Placement Cell officials and coordinators.';
+
+          if (rollInput) rollInput.required = false;
+          if (cgpaInput) cgpaInput.required = false;
+          if (companyInput) companyInput.required = false;
+          if (recruiterDesigInput) recruiterDesigInput.required = false;
+          if (adminDesigInput) adminDesigInput.required = true;
+          if (employeeIdInput) employeeIdInput.required = true;
+        } else {
+          // STUDENT
+          studentSection.style.display = 'block';
+          recruiterSection.style.display = 'none';
+          adminSection.style.display = 'none';
+
+          emailLabel.textContent = 'Institutional Student Email';
+          emailInput.placeholder = 'student@univ.edu';
+          titleEl.textContent = 'Student Candidate Registration';
+          subtitleEl.textContent = 'Create your verified student profile to access campus drives, AI matching, and interviews.';
+
+          if (rollInput) rollInput.required = true;
+          if (cgpaInput) cgpaInput.required = true;
+          if (companyInput) companyInput.required = false;
+          if (recruiterDesigInput) recruiterDesigInput.required = false;
+          if (adminDesigInput) adminDesigInput.required = false;
+          if (employeeIdInput) employeeIdInput.required = false;
+        }
+      }
+
+      roleRadios.forEach(function (radio) {
+        radio.addEventListener('change', function () {
+          updateRoleFields(this.value);
+        });
+        if (radio.checked) {
+          updateRoleFields(radio.value);
+        }
+      });
+
+      // Also support query param: ?role=recruiter or ?role=admin
+      var params = new URLSearchParams(window.location.search);
+      var roleParam = params.get('role');
+      if (roleParam) {
+        var targetRadio = document.querySelector('input[name="role"][value="' + roleParam.toUpperCase() + '"]');
+        if (targetRadio) {
+          targetRadio.checked = true;
+          updateRoleFields(roleParam.toUpperCase());
+        }
+      }
+
+      // Password matching validation
+      var registerForm = document.getElementById('registerForm');
+      var password = document.getElementById('password');
+      var confirmPassword = document.getElementById('confirmPassword');
+      if (registerForm && password && confirmPassword) {
+        registerForm.addEventListener('submit', function (e) {
+          if (password.value !== confirmPassword.value) {
+            e.preventDefault();
+            alert('Passwords do not match. Please re-enter matching passwords.');
+            confirmPassword.focus();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

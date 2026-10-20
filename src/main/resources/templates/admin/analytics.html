@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Placement Analytics — PlacementAI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+
+  <style>
+    /* Clean CSS Progress and Metric Visualizers (No heavy third-party chart libraries) */
+    .metric-bar-group {
+      margin-bottom: var(--space-4);
+    }
+    .metric-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-1);
+    }
+    .metric-bar-track {
+      height: 10px;
+      background-color: #e2e8f0;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .metric-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.4s ease-in-out;
+    }
+    .bg-navy { background-color: var(--color-primary); }
+    .bg-blue { background-color: var(--color-primary-accent); }
+    .bg-green { background-color: #059669; }
+    .bg-amber { background-color: #d97706; }
+    .bg-purple { background-color: #7c3aed; }
+  </style>
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Admin Console</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name">Dr. Rajesh Varma</div>
+        <span class="sidebar-user-role">Head, Placement Cell</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Admin Operations</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/admin/dashboard}" class="sidebar-link">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="students.html" th:href="@{/admin/students}" class="sidebar-link">Students</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="recruiters.html" th:href="@{/admin/recruiters}" class="sidebar-link">Recruiters</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="companies.html" th:href="@{/admin/companies}" class="sidebar-link">Companies</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/admin/jobs}" class="sidebar-link">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applications.html" th:href="@{/admin/applications}" class="sidebar-link">Applications</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/admin/interviews}" class="sidebar-link">Interviews</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="feedback.html" th:href="@{/admin/feedback}" class="sidebar-link">Feedback</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="analytics.html" th:href="@{/admin/analytics}" class="sidebar-link active">Analytics</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="../auth/login.html" th:href="@{/login}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Institutional Placement Analytics</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar">RV</div>
+            <div class="user-info">
+              <span class="user-display-name">Dr. Rajesh Varma</span>
+              <span class="user-display-role">Institutional Administrator</span>
+            </div>
+          </div>
+          <a href="../auth/login.html" th:href="@{/login}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Campus Placement Analytics &amp; Reports</h1>
+            <p>Annual recruitment metrics, branch-wise placement progress, corporate intake distribution, and candidate satisfaction indices.</p>
+          </div>
+          <div class="page-actions">
+            <a href="/admin/export/accreditation-csv" th:href="@{/admin/export/accreditation-csv}" class="btn btn-secondary" id="exportPlacementReportBtn" style="text-decoration: none;">Export Accreditation CSV</a>
+            <button type="button" class="btn btn-primary" onclick="window.print()">Print Official Summary</button>
+          </div>
+        </div>
+
+        <!-- KPI Metrics Grid -->
+        <div class="grid grid-4" style="margin-bottom: var(--space-8);">
+          <div class="stat-card">
+            <div class="stat-label">Overall Placement Rate</div>
+            <div class="stat-value" th:text="${placementRate != null ? placementRate + '%' : '84.2%'}">84.2%</div>
+            <div class="stat-helper"><span th:text="${placedCount != null ? placedCount : '0'}">0</span> placed of <span th:text="${totalStudents != null ? totalStudents : '0'}">0</span> candidates</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Partner Companies</div>
+            <div class="stat-value" th:text="${totalCompanies != null ? totalCompanies : '0'}">0</div>
+            <div class="stat-helper">Corporate partners registered</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Campus Job Drives</div>
+            <div class="stat-value" th:text="${totalDrives != null ? totalDrives : '0'}">0</div>
+            <div class="stat-helper">Total drives in cycle</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Offers Extended</div>
+            <div class="stat-value" th:text="${placedCount != null ? placedCount : '0'}">0</div>
+            <div class="stat-helper">Confirmed student placements</div>
+          </div>
+        </div>
+
+        <!-- Visual Analytics Grid (CSS Progress Bars) -->
+        <div class="grid grid-2" style="margin-bottom: var(--space-8);">
+          <!-- 1. Placements by Department -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Placement Rate by Academic Department</h3>
+            </div>
+            <div class="card-body">
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>Computer Science &amp; Engineering (CSE)</span>
+                  <span>94.5% (189 / 200)</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-green" style="width: 94.5%;"></div>
+                </div>
+              </div>
+
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>Computer Engineering (CE)</span>
+                  <span>88.0% (88 / 100)</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-blue" style="width: 88%;"></div>
+                </div>
+              </div>
+
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>Electronics &amp; Communication (ECE)</span>
+                  <span>84.2% (101 / 120)</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-blue" style="width: 84.2%;"></div>
+                </div>
+              </div>
+
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>Electrical &amp; Electronics (EEE)</span>
+                  <span>78.8% (63 / 80)</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-amber" style="width: 78.8%;"></div>
+                </div>
+              </div>
+
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>Mechanical Engineering</span>
+                  <span>72.5% (58 / 80)</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-amber" style="width: 72.5%;"></div>
+                </div>
+              </div>
+
+              <div class="metric-bar-group" style="margin-bottom: 0;">
+                <div class="metric-bar-label">
+                  <span>Civil Engineering</span>
+                  <span>55.3% (21 / 38)</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-purple" style="width: 55.3%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Applications by Company Share -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Applications Volume by Enterprise Partner</h3>
+            </div>
+            <div class="card-body">
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>Microsoft Corporation (24.0 LPA)</span>
+                  <span>382 Applications</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-navy" style="width: 85%;"></div>
+                </div>
+              </div>
+
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>Amazon Web Services (22.0 LPA)</span>
+                  <span>340 Applications</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-blue" style="width: 76%;"></div>
+                </div>
+              </div>
+
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>Google India (28.5 LPA)</span>
+                  <span>312 Applications</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-green" style="width: 70%;"></div>
+                </div>
+              </div>
+
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>Razorpay Technologies (18.0 LPA)</span>
+                  <span>265 Applications</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-purple" style="width: 58%;"></div>
+                </div>
+              </div>
+
+              <div class="metric-bar-group" style="margin-bottom: 0;">
+                <div class="metric-bar-label">
+                  <span>Tata Consultancy Services (8.5 LPA)</span>
+                  <span>490 Applications</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-amber" style="width: 95%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Analytics Row: Interview Statistics & Feedback Index -->
+        <div class="grid grid-2">
+          <!-- Interview Funnel -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Interview Pipeline Funnel</h3>
+            </div>
+            <div class="card-body">
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>Round 1: Online Technical Assessment</span>
+                  <span>1,412 Completed (100%)</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-navy" style="width: 100%;"></div>
+                </div>
+              </div>
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>Round 2: System Architecture &amp; Coding</span>
+                  <span>624 Advanced (44.2%)</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-blue" style="width: 44.2%;"></div>
+                </div>
+              </div>
+              <div class="metric-bar-group" style="margin-bottom: 0;">
+                <div class="metric-bar-label">
+                  <span>Round 3: Final HR &amp; Partner Offer</span>
+                  <span>520 Cleared &amp; Placed (36.8%)</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-green" style="width: 36.8%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feedback Satisfaction Index -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Candidate Interview Experience Index</h3>
+            </div>
+            <div class="card-body">
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>5 Star: Outstanding Experience</span>
+                  <span>62% of responses</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-green" style="width: 62%;"></div>
+                </div>
+              </div>
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>4 Star: Good / Fair Assessment</span>
+                  <span>26% of responses</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-blue" style="width: 26%;"></div>
+                </div>
+              </div>
+              <div class="metric-bar-group">
+                <div class="metric-bar-label">
+                  <span>3 Star: Standard Assessment</span>
+                  <span>9% of responses</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-amber" style="width: 9%;"></div>
+                </div>
+              </div>
+              <div class="metric-bar-group" style="margin-bottom: 0;">
+                <div class="metric-bar-label">
+                  <span>1 - 2 Star: Inconvenient / Delays</span>
+                  <span>3% of responses</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill bg-purple" style="width: 3%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Institutional Administrator Console</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>

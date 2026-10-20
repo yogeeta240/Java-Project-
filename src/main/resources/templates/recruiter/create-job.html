@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post Campus Drive — PlacementAI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Recruiter Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name" th:text="${recruiter != null && recruiter.user != null ? recruiter.user.fullName : (recruiterName != null ? recruiterName : 'Recruiter')}">Recruiter Name</div>
+        <span class="sidebar-user-role" th:text="${company != null ? ('Recruiter • ' + company.name) : (recruiter != null && recruiter.company != null ? ('Recruiter • ' + recruiter.company.name) : 'Recruiter')}">Recruiter &bull; Corporate Partner</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Recruiter Menu</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/recruiter/dashboard}" class="sidebar-link">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="profile.html" th:href="@{/recruiter/profile}" class="sidebar-link">Company Profile</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/recruiter/jobs}" class="sidebar-link">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="create-job.html" th:href="@{/recruiter/create-job}" class="sidebar-link active">Create Job</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applicants.html" th:href="@{/recruiter/applicants}" class="sidebar-link">Applicants</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/recruiter/interviews}" class="sidebar-link">Interviews</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="/logout" th:href="@{/logout}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Create Campus Drive</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar" th:text="${recruiter != null && recruiter.user != null && recruiter.user.fullName != null && !recruiter.user.fullName.isEmpty() ? recruiter.user.fullName.substring(0, 1).toUpperCase() : 'R'}">R</div>
+            <div class="user-info">
+              <span class="user-display-name" th:text="${recruiter != null && recruiter.user != null ? recruiter.user.fullName : (recruiterName != null ? recruiterName : 'Recruiter')}">Recruiter Name</span>
+              <span class="user-display-role" th:text="${recruiter != null && recruiter.designation != null ? recruiter.designation : 'Campus Talent Partner'}">Lead Campus Talent Partner</span>
+            </div>
+          </div>
+          <a href="/logout" th:href="@{/logout}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Post Campus Recruitment Opening</h1>
+            <p>Define role scope, academic eligibility criteria, compensation details, and skill requisites for student screening.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Drive Specification Form</h3>
+          </div>
+          <div class="card-body">
+            <div th:if="${param.error}" class="alert alert-danger" style="margin-bottom: var(--space-4);">
+              <span th:if="${#strings.equals(param.error, 'missing_title')}">Please enter a valid Job Designation / Title.</span>
+              <span th:if="${#strings.equals(param.error, 'missing_package')}">Please enter a valid Compensation Package (CTC).</span>
+              <span th:if="${!#strings.equals(param.error, 'missing_title') and !#strings.equals(param.error, 'missing_package')}">Please complete all required fields before publishing the campus drive.</span>
+            </div>
+
+            <form method="post" action="/recruiter/create-job" th:action="@{/recruiter/create-job}">
+              <!-- Section 1: Basic Role Information -->
+              <h4 style="margin-bottom: var(--space-4); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-2);">1. Role Specifications</h4>
+              <div class="form-row">
+                <div class="form-col-6">
+                  <div class="form-group">
+                    <label class="form-label required" for="jobTitle">Job Designation / Title</label>
+                    <input type="text" id="jobTitle" name="title" class="form-control" placeholder="e.g. Software Development Engineer" required>
+                  </div>
+                </div>
+                <div class="form-col-6">
+                  <div class="form-group">
+                    <label class="form-label required" for="jobLocation">Work Location</label>
+                    <input type="text" id="jobLocation" name="location" class="form-control" placeholder="e.g. Bangalore / Hyderabad / Hybrid" required>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col-6">
+                  <div class="form-group">
+                    <label class="form-label required" for="jobType">Job Category</label>
+                    <select id="jobType" name="roleType" class="form-control">
+                      <option value="Full-time Regular" selected>Full-time Regular</option>
+                      <option value="Internship + PPO">Internship + PPO</option>
+                      <option value="Summer Internship">Summer Internship (6 Months)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-col-6">
+                  <div class="form-group">
+                    <label class="form-label required" for="package">Compensation Package (CTC)</label>
+                    <input type="text" id="package" name="packageCtc" class="form-control" placeholder="e.g. 24.0 LPA" required>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 2: Eligibility & Departments -->
+              <h4 style="margin-top: var(--space-6); margin-bottom: var(--space-4); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-2);">2. Eligibility Benchmarks</h4>
+              <div class="form-row">
+                <div class="form-col-4">
+                  <div class="form-group">
+                    <label class="form-label required" for="minCgpa">Minimum CGPA Benchmark</label>
+                    <input type="number" id="minCgpa" name="minCgpa" class="form-control" placeholder="e.g. 7.00" value="7.00" step="0.01" min="0" max="10" required>
+                    <span class="form-helper">Cutoff for applications</span>
+                  </div>
+                </div>
+                <div class="form-col-4">
+                  <div class="form-group">
+                    <label class="form-label" for="maxBacklogs">Max Active Backlogs</label>
+                    <input type="number" id="maxBacklogs" name="maxBacklogs" class="form-control" placeholder="e.g. 0" value="0" min="0" max="10">
+                    <span class="form-helper">Permitted backlogs</span>
+                  </div>
+                </div>
+                <div class="form-col-4">
+                  <div class="form-group">
+                    <label class="form-label required" for="deadline">Application Deadline</label>
+                    <input type="date" id="deadline" name="deadline" class="form-control" required>
+                    <span class="form-helper">Drive closing date</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required">Eligible Academic Departments</label>
+                <div class="grid grid-4" style="gap: var(--space-2);">
+                  <div class="form-check">
+                    <input type="checkbox" id="deptCSE" name="allowedBranches" value="CSE" class="form-check-input" checked>
+                    <label for="deptCSE" class="form-check-label">CSE</label>
+                  </div>
+                  <div class="form-check">
+                    <input type="checkbox" id="deptIT" name="allowedBranches" value="IT" class="form-check-input" checked>
+                    <label for="deptIT" class="form-check-label">IT</label>
+                  </div>
+                  <div class="form-check">
+                    <input type="checkbox" id="deptECE" name="allowedBranches" value="ECE" class="form-check-input" checked>
+                    <label for="deptECE" class="form-check-label">ECE</label>
+                  </div>
+                  <div class="form-check">
+                    <input type="checkbox" id="deptEEE" name="allowedBranches" value="EEE" class="form-check-input" checked>
+                    <label for="deptEEE" class="form-check-label">EEE</label>
+                  </div>
+                  <div class="form-check">
+                    <input type="checkbox" id="deptMech" name="allowedBranches" value="Mechanical" class="form-check-input">
+                    <label for="deptMech" class="form-check-label">Mechanical</label>
+                  </div>
+                  <div class="form-check">
+                    <input type="checkbox" id="deptCivil" name="allowedBranches" value="Civil" class="form-check-input">
+                    <label for="deptCivil" class="form-check-label">Civil</label>
+                  </div>
+                  <div class="form-check">
+                    <input type="checkbox" id="deptOther" name="allowedBranches" value="Other" class="form-check-input">
+                    <label for="deptOther" class="form-check-label">Other Disciplines</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 3: Skills & Job Description -->
+              <h4 style="margin-top: var(--space-6); margin-bottom: var(--space-4); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-2);">3. Skills &amp; Description</h4>
+              <div class="form-group">
+                <label class="form-label required" for="requiredSkills">Required Skills (Comma-separated)</label>
+                <input type="text" id="requiredSkills" name="skillsRequired" class="form-control" placeholder="e.g. Java, Spring Boot, SQL, Distributed Systems" required>
+                <span class="form-helper">The AI Recommendation Engine parses these skills to rank candidate applications.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required" for="jobDescription">Role Description</label>
+                <textarea id="jobDescription" name="description" class="form-control" rows="4" placeholder="Detail the organizational team context, technology environment, and primary goals..." required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="responsibilities">Key Responsibilities</label>
+                <textarea id="responsibilities" name="responsibilities" class="form-control" rows="4" placeholder="List core daily engineering responsibilities and project expectations..."></textarea>
+              </div>
+
+              <div class="form-actions">
+                <a href="jobs.html" th:href="@{/recruiter/jobs}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Publish Campus Drive</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Recruiter Enterprise Portal</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+  <script>
+    // Prefill default deadline to 30 days from now if not chosen
+    document.addEventListener('DOMContentLoaded', function () {
+      const deadlineInput = document.getElementById('deadline');
+      if (deadlineInput && !deadlineInput.value) {
+        const today = new Date();
+        const minDate = today.toISOString().split('T')[0];
+        deadlineInput.min = minDate;
+        today.setDate(today.getDate() + 30);
+        deadlineInput.value = today.toISOString().split('T')[0];
+      }
+    });
+  </script>
+</body>
+</html>

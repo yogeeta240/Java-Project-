@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — AI-Powered Placement Management System</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Core and Authentication CSS Stylesheets -->
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/auth.css" th:href="@{/css/auth.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body class="auth-page">
+  <div class="auth-container">
+    <!-- University / Portal Header Branding -->
+    <div class="auth-brand">
+      <div class="auth-brand-badge">PM</div>
+      <h1 class="auth-brand-title">PlacementAI</h1>
+      <div class="auth-brand-subtitle">University Training &amp; Placement Portal</div>
+    </div>
+
+    <!-- Main Login Card -->
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <h2 class="auth-card-title">Welcome Back</h2>
+        <p class="auth-card-subtitle">Sign in to access your portal dashboard and placement activities.</p>
+      </div>
+
+      <!-- Text Alert Notifications (Error / Logout / Registration Feedback) -->
+      <div class="alert alert-error flex-between" id="unauthorizedAlert" th:if="${param.unauthorized != null}" style="display: flex;">
+        <span>Authentication Required: Please sign in with appropriate institutional credentials to access that portal.</span>
+        <button type="button" class="alert-dismiss-btn" style="background:none;border:none;cursor:pointer;color:inherit;font-weight:bold;">Dismiss</button>
+      </div>
+
+      <div class="alert alert-error flex-between" id="errorAlert" style="display: none;">
+        <span>Invalid institutional email or password. Please try again.</span>
+        <button type="button" class="alert-dismiss-btn" style="background:none;border:none;cursor:pointer;color:inherit;font-weight:bold;">Dismiss</button>
+      </div>
+
+      <div class="alert alert-success flex-between" id="registeredAlert" style="display: none;">
+        <span>Account created successfully! Please sign in with your credentials.</span>
+        <button type="button" class="alert-dismiss-btn" style="background:none;border:none;cursor:pointer;color:inherit;font-weight:bold;">Dismiss</button>
+      </div>
+
+      <div class="alert alert-success flex-between" id="logoutAlert" style="display: none;">
+        <span>You have been signed out successfully.</span>
+        <button type="button" class="alert-dismiss-btn" style="background:none;border:none;cursor:pointer;color:inherit;font-weight:bold;">Dismiss</button>
+      </div>
+
+      <!-- Login Form -->
+      <form action="/login" method="post" id="loginForm">
+        <!-- Role Indicator Selection -->
+        <div class="form-group">
+          <label class="form-label required">Select Portal Role</label>
+          <div class="auth-role-group">
+            <div class="auth-role-option">
+              <input type="radio" id="roleStudent" name="role" value="STUDENT" class="auth-role-input" checked>
+              <label for="roleStudent" class="auth-role-label">Student</label>
+            </div>
+            <div class="auth-role-option">
+              <input type="radio" id="roleRecruiter" name="role" value="RECRUITER" class="auth-role-input">
+              <label for="roleRecruiter" class="auth-role-label">Recruiter</label>
+            </div>
+            <div class="auth-role-option">
+              <input type="radio" id="roleAdmin" name="role" value="ADMIN" class="auth-role-input">
+              <label for="roleAdmin" class="auth-role-label">Admin</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+          <label class="form-label required" for="email">Institutional Email</label>
+          <input type="email" id="email" name="email" class="form-control" placeholder="user@university.edu" required autocomplete="email" th:value="${registeredEmail}">
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label class="form-label required" for="password">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password" style="padding-right: 4.5rem;">
+            <button type="button" class="password-toggle-btn" id="passwordToggleBtn" aria-label="Toggle password visibility">Show</button>
+          </div>
+        </div>
+
+        <!-- Remember Me and Forgot Password -->
+        <div class="auth-meta-row">
+          <div class="form-check" style="margin-bottom: 0;">
+            <input type="checkbox" id="rememberMe" name="remember-me" class="form-check-input" checked>
+            <label for="rememberMe" class="form-check-label">Remember me</label>
+          </div>
+          <a href="#" class="auth-forgot-link" onclick="alert('Password reset instructions will be dispatched to your university email.'); return false;">Forgot password?</a>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-block btn-lg">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Registration Navigation Link -->
+      <div class="auth-card-footer">
+        <span>Don't have an account? </span>
+        <a href="/register" th:href="@{/register}">Register</a>
+      </div>
+    </div>
+
+    <!-- Institutional Footer Note -->
+    <div class="auth-portal-footer">
+      <span>Official University Placement Management System &bull; Secure Institutional Access</span>
+    </div>
+  </div>
+
+  <!-- Client Script for Password Toggle and Role Credential Sync -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var emailInput = document.getElementById('email');
+      var passwordInput = document.getElementById('password');
+
+      // Update credentials automatically when user selects a portal role
+      var roleRadios = document.querySelectorAll('input[name="role"]');
+      roleRadios.forEach(function (radio) {
+        radio.addEventListener('change', function () {
+          if (!emailInput.value || emailInput.value.includes('@university.edu') || emailInput.value.includes('@microsoft.com')) {
+            if (this.value === 'STUDENT') {
+              emailInput.value = 'aarav@univ.edu';
+              passwordInput.value = 'password123';
+            } else if (this.value === 'RECRUITER') {
+              emailInput.value = 'recruiter@microsoft.com';
+              passwordInput.value = 'password123';
+            } else if (this.value === 'ADMIN') {
+              emailInput.value = 'dean@univ.edu';
+              passwordInput.value = 'password123';
+            }
+          }
+        });
+      });
+
+      // Check query parameters for feedback alerts
+      var urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('registered') === 'true') {
+        var regAlert = document.getElementById('registeredAlert');
+        if (regAlert) regAlert.style.display = 'flex';
+        var regEmail = urlParams.get('email');
+        if (regEmail) {
+          emailInput.value = decodeURIComponent(regEmail);
+          passwordInput.value = '';
+          passwordInput.focus();
+        }
+      }
+      if (urlParams.get('logout') === 'true') {
+        var logAlert = document.getElementById('logoutAlert');
+        if (logAlert) logAlert.style.display = 'flex';
+      }
+      if (urlParams.get('error') === 'true') {
+        var errAlert = document.getElementById('errorAlert');
+        if (errAlert) errAlert.style.display = 'flex';
+      }
+
+      // Password toggle
+      var toggleBtn = document.getElementById('passwordToggleBtn');
+      if (toggleBtn && passwordInput) {
+        toggleBtn.addEventListener('click', function () {
+          if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleBtn.textContent = 'Hide';
+          } else {
+            passwordInput.type = 'password';
+            toggleBtn.textContent = 'Show';
+          }
+        });
+      }
+
+      // Form submission handler: synchronize cookie for prototype server and allow standard POST
+      var loginForm = document.getElementById('loginForm');
+      if (loginForm) {
+        loginForm.addEventListener('submit', function () {
+          var roleInput = document.querySelector('input[name="role"]:checked');
+          if (roleInput) {
+            document.cookie = "user_role=" + roleInput.value + "; path=/; max-age=86400";
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

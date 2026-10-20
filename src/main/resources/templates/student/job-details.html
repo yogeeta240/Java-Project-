@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Details — PlacementAI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Student Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name" th:text="${student != null && student.user != null ? student.user.fullName : 'Student'}">Aarav Sharma</div>
+        <span class="sidebar-user-role" th:text="${student != null && student.rollNumber != null ? ('Roll: ' + student.rollNumber) : 'Student'}">Student &bull; CSE</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Student Menu</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/student/dashboard}" class="sidebar-link">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="profile.html" th:href="@{/student/profile}" class="sidebar-link">My Profile</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/student/jobs}" class="sidebar-link active">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applications.html" th:href="@{/student/applications}" class="sidebar-link">My Applications</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/student/interviews}" class="sidebar-link">Interviews</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="recommendations.html" th:href="@{/student/recommendations}" class="sidebar-link">Recommendations</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="feedback.html" th:href="@{/student/feedback}" class="sidebar-link">Feedback</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="/logout" th:href="@{/logout}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Drive Specifications</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar" th:text="${student != null ? student.avatarInitials : 'ST'}">AS</div>
+            <div class="user-info">
+              <span class="user-display-name" th:text="${student != null && student.user != null ? student.user.fullName : 'Student'}">Aarav Sharma</span>
+              <span class="user-display-role" th:text="${student != null && student.rollNumber != null ? ('Roll: ' + student.rollNumber) : ''}">Roll: 2022CSE041</span>
+            </div>
+          </div>
+          <a href="/logout" th:href="@{/logout}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div th:if="${job == null}" class="alert alert-info">
+          <span>Job details not found. Please browse available listings.</span>
+        </div>
+
+        <div th:if="${job != null}">
+          <div class="page-header">
+            <div class="page-header-info">
+              <a href="jobs.html" th:href="@{/student/jobs}" style="font-size: var(--font-size-xs); font-weight: 600; display: inline-block; margin-bottom: 8px;">&larr; Back to Job Listings</a>
+              <h1 th:text="${job.title + ' — ' + job.company.name}">Software Engineer — Microsoft Corporation</h1>
+              <p><span th:text="${job.roleType}">Full-time</span> &bull; <span th:text="${job.location}">Bangalore</span> &bull; Status: <span class="badge badge-shortlisted" th:text="${job.status}">OPEN</span></p>
+            </div>
+            <div class="page-actions">
+              <!-- Live Application Action Form -->
+              <div th:if="${alreadyApplied}">
+                <button type="button" class="btn btn-secondary btn-lg" disabled>Already Applied &check;</button>
+              </div>
+              <div th:unless="${alreadyApplied}">
+                <form th:if="${isEligible}" th:action="@{/student/apply}" method="POST" style="margin: 0;">
+                  <input type="hidden" name="jobId" th:value="${job.id}">
+                  <button type="submit" class="btn btn-primary btn-lg" id="applyButton">Submit Application</button>
+                </form>
+                <button th:unless="${isEligible}" type="button" class="btn btn-secondary btn-lg" disabled title="CGPA or department criteria not met">Not Eligible</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Eligibility & Match Status Banner -->
+          <div th:if="${isEligible}" class="alert alert-success flex-between" style="margin-bottom: var(--space-6);">
+            <span>
+              Eligibility Verified: Your CGPA (<strong th:text="${student.cgpa}">8.92</strong>) meets the minimum requirement (<strong th:text="${job.minCgpa}">7.00</strong>). AI Match Score: <strong th:text="${matchScore + '%'}">92%</strong>
+            </span>
+            <span class="badge badge-selected">Eligible</span>
+          </div>
+          <div th:unless="${isEligible}" class="alert alert-warning flex-between" style="margin-bottom: var(--space-6);">
+            <span>
+              Criteria Notice: Minimum CGPA required is <strong th:text="${job.minCgpa}">7.00</strong> (Your CGPA: <strong th:text="${student.cgpa}">8.92</strong>). Eligible branches: <strong th:text="${job.allowedBranches}">CSE, IT</strong>.
+            </span>
+            <span class="badge badge-rejected">Ineligible</span>
+          </div>
+
+          <!-- Two Column Layout: Job Overview and Criteria Sidebar -->
+          <div class="grid grid-3">
+            <div style="grid-column: span 2;">
+              <!-- Description Card -->
+              <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-header">
+                  <h3>Role Overview</h3>
+                </div>
+                <div class="card-body">
+                  <p th:text="${job.description}" style="white-space: pre-line; line-height: 1.6;">
+                    Job description and technical role specifications.
+                  </p>
+
+                  <h4 style="margin-top: var(--space-4); margin-bottom: var(--space-2);">Required Skills &amp; Tech Stack</h4>
+                  <div style="margin-bottom: var(--space-4);" th:if="${job.skillsRequired != null}">
+                    <span class="tag tag-matched" th:each="skill : ${#strings.arraySplit(job.skillsRequired, ',')}" th:text="${#strings.trim(skill)}">Java</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Company Profile Card -->
+              <div class="card" th:if="${job.company != null}" style="margin-bottom: var(--space-6);">
+                <div class="card-header">
+                  <h3>About <span th:text="${job.company.name}">Company</span></h3>
+                  <span class="badge badge-selected" th:text="${job.company.industry != null ? job.company.industry : 'Verified Employer'}">Technology</span>
+                </div>
+                <div class="card-body">
+                  <p th:text="${job.company.description}" style="white-space: pre-line; line-height: 1.6; color: var(--color-text-secondary); margin-bottom: var(--space-4);">
+                    Corporate overview and campus hiring mission.
+                  </p>
+                  <div class="grid grid-2" style="font-size: var(--font-size-sm); gap: var(--space-3);">
+                    <div>
+                      <strong style="color: var(--color-text-muted);">Development Centers:</strong>
+                      <span th:text="${job.company.location != null ? job.company.location : 'Pan-India'}">Pan-India</span>
+                    </div>
+                    <div th:if="${job.company.website != null && !job.company.website.isEmpty()}">
+                      <strong style="color: var(--color-text-muted);">Careers Portal:</strong>
+                      <a th:href="${job.company.website}" target="_blank" th:text="${job.company.website}" style="color: var(--color-primary); word-break: break-all;">https://careers.company.com</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Drive Metadata Sidebar Card -->
+            <div>
+              <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-header">
+                  <h4>Drive Parameters</h4>
+                </div>
+                <div class="card-body" style="font-size: var(--font-size-sm);">
+                  <div style="margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-2);">
+                    <div style="color: var(--color-text-muted); font-size: var(--font-size-xs);">Compensation Package</div>
+                    <div style="font-weight: 600; font-size: var(--font-size-base); color: var(--color-primary);" th:text="${job.packageCtc}">24.0 LPA (CTC)</div>
+                  </div>
+
+                  <div style="margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-2);">
+                    <div style="color: var(--color-text-muted); font-size: var(--font-size-xs);">Job Type</div>
+                    <div style="font-weight: 600;" th:text="${job.roleType}">Full-time Regular</div>
+                  </div>
+
+                  <div style="margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-2);">
+                    <div style="color: var(--color-text-muted); font-size: var(--font-size-xs);">Work Location</div>
+                    <div style="font-weight: 600;" th:text="${job.location}">Bangalore / Hyderabad</div>
+                  </div>
+
+                  <div style="margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-2);">
+                    <div style="color: var(--color-text-muted); font-size: var(--font-size-xs);">Minimum CGPA Benchmark</div>
+                    <div style="font-weight: 600;" th:text="${job.minCgpa + ' on a 10.0 scale'}">7.00 on a 10.0 scale</div>
+                  </div>
+
+                  <div style="margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-2);">
+                    <div style="color: var(--color-text-muted); font-size: var(--font-size-xs);">Eligible Departments</div>
+                    <div style="font-weight: 600;" th:text="${job.allowedBranches}">CSE, CE, ECE, EEE</div>
+                  </div>
+
+                  <div>
+                    <div style="color: var(--color-text-muted); font-size: var(--font-size-xs);">Application Deadline</div>
+                    <div style="font-weight: 600; color: #dc2626;" th:text="${job.deadline != null ? #temporals.format(job.deadline, 'dd MMMM yyyy') : 'Open'}">20 September 2026</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Academic Enterprise Portal</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>

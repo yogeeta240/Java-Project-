@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <!-- Reusable Text-Based Alert Container Fragment -->
+  <div th:fragment="alerts">
+    <!-- Success Alert -->
+    <div class="alert alert-success flex-between" th:if="${successMessage != null}">
+      <span th:text="${successMessage}">Operation completed successfully.</span>
+      <button type="button" class="alert-dismiss-btn" aria-label="Dismiss alert" style="background: none; border: none; cursor: pointer; color: inherit; font-size: 14px; font-weight: bold; margin-left: 12px;">
+        Dismiss
+      </button>
+    </div>
+
+    <!-- Error Alert -->
+    <div class="alert alert-error flex-between" th:if="${errorMessage != null}">
+      <span th:text="${errorMessage}">An error occurred while processing your request.</span>
+      <button type="button" class="alert-dismiss-btn" aria-label="Dismiss alert" style="background: none; border: none; cursor: pointer; color: inherit; font-size: 14px; font-weight: bold; margin-left: 12px;">
+        Dismiss
+      </button>
+    </div>
+
+    <!-- Warning Alert -->
+    <div class="alert alert-warning flex-between" th:if="${warningMessage != null}">
+      <span th:text="${warningMessage}">Please review the indicated requirements before proceeding.</span>
+      <button type="button" class="alert-dismiss-btn" aria-label="Dismiss alert" style="background: none; border: none; cursor: pointer; color: inherit; font-size: 14px; font-weight: bold; margin-left: 12px;">
+        Dismiss
+      </button>
+    </div>
+
+    <!-- Info Alert -->
+    <div class="alert alert-info flex-between" th:if="${infoMessage != null}">
+      <span th:text="${infoMessage}">System notification information.</span>
+      <button type="button" class="alert-dismiss-btn" aria-label="Dismiss alert" style="background: none; border: none; cursor: pointer; color: inherit; font-size: 14px; font-weight: bold; margin-left: 12px;">
+        Dismiss
+      </button>
+    </div>
+  </div>
+</body>
+</html>

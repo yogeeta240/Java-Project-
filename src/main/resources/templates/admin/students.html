@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Directory — PlacementAI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Admin Console</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name">Dr. Rajesh Varma</div>
+        <span class="sidebar-user-role">Head, Placement Cell</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Admin Operations</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/admin/dashboard}" class="sidebar-link">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="students.html" th:href="@{/admin/students}" class="sidebar-link active">Students</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="recruiters.html" th:href="@{/admin/recruiters}" class="sidebar-link">Recruiters</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="companies.html" th:href="@{/admin/companies}" class="sidebar-link">Companies</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/admin/jobs}" class="sidebar-link">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applications.html" th:href="@{/admin/applications}" class="sidebar-link">Applications</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/admin/interviews}" class="sidebar-link">Interviews</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="feedback.html" th:href="@{/admin/feedback}" class="sidebar-link">Feedback</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="analytics.html" th:href="@{/admin/analytics}" class="sidebar-link">Analytics</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="../auth/login.html" th:href="@{/login}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Student Directory &amp; Records</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar">RV</div>
+            <div class="user-info">
+              <span class="user-display-name">Dr. Rajesh Varma</span>
+              <span class="user-display-role">Institutional Administrator</span>
+            </div>
+          </div>
+          <a href="../auth/login.html" th:href="@{/login}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>University Student Management</h1>
+            <p>Access student academic profiles across all institutional departments, inspect verified technical skills, and manage placement eligibility.</p>
+          </div>
+          <div class="page-actions">
+            <a href="/admin/export/students-csv" th:href="@{/admin/export/students-csv}" class="btn btn-secondary" style="text-decoration: none;">Export Roster</a>
+          </div>
+        </div>
+
+        <!-- Filter and Department Selector Bar -->
+        <div class="card" style="margin-bottom: var(--space-6);">
+          <div class="card-body" style="padding: var(--space-4) var(--space-6);">
+            <form method="get" th:action="@{/admin/students}" id="adminStudentFilterForm">
+              <div class="flex-between" style="flex-wrap: wrap; gap: var(--space-4); align-items: center;">
+                <div class="flex" style="align-items: center; gap: var(--space-3); flex-wrap: wrap;">
+                  <label class="form-label" style="margin-bottom: 0; font-weight: 600;" for="adminDeptFilter">Department:</label>
+                  <select class="form-control" style="width: auto;" id="adminDeptFilter" name="department">
+                    <option value="ALL" th:selected="${selectedDept == null or selectedDept == '' or selectedDept == 'ALL'}">All Departments</option>
+                    <option value="CSE" th:selected="${selectedDept == 'CSE'}">CSE - Computer Science &amp; Engineering</option>
+                    <option value="IT" th:selected="${selectedDept == 'IT'}">IT - Information Technology</option>
+                    <option value="CE" th:selected="${selectedDept == 'CE'}">CE - Computer Engineering</option>
+                    <option value="ECE" th:selected="${selectedDept == 'ECE'}">ECE - Electronics &amp; Communication</option>
+                    <option value="EEE" th:selected="${selectedDept == 'EEE'}">EEE - Electrical &amp; Electronics</option>
+                    <option value="Mechanical" th:selected="${selectedDept == 'Mechanical'}">Mechanical Engineering</option>
+                    <option value="Civil" th:selected="${selectedDept == 'Civil'}">Civil Engineering</option>
+                    <option value="Other" th:selected="${selectedDept == 'Other'}">Other Disciplines</option>
+                  </select>
+
+                  <label class="form-label" style="margin-bottom: 0; font-weight: 600; margin-left: 12px;" for="adminStatusFilter">Placement Status:</label>
+                  <select class="form-control" style="width: auto;" id="adminStatusFilter" name="status">
+                    <option value="" th:selected="${selectedStatus == null or selectedStatus == ''}">All Statuses</option>
+                    <option value="OFFERED" th:selected="${selectedStatus == 'OFFERED'}">Offered / Placed</option>
+                    <option value="ACCEPTED" th:selected="${selectedStatus == 'ACCEPTED'}">Accepted</option>
+                    <option value="UNPLACED" th:selected="${selectedStatus == 'UNPLACED'}">Seeking Placement / Unplaced</option>
+                  </select>
+                </div>
+
+                <div class="flex" style="gap: var(--space-2); align-items: center;">
+                  <input type="text" class="form-control" id="adminStudentSearch" name="query" th:value="${searchQuery}" placeholder="Search by name, roll, or skill..." style="width: 240px;">
+                  <button type="submit" class="btn btn-primary btn-sm" id="adminStudentFilterBtn" style="padding: 0.5rem 1.25rem; font-weight: 600;">Filter</button>
+                  <a th:href="@{/admin/students}" class="btn btn-secondary btn-sm" id="adminStudentResetBtn" style="text-decoration: none; padding: 0.5rem 1rem;">Reset</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Student Master Table Card -->
+        <div class="card">
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table table-striped" id="studentMasterTable">
+                <thead>
+                  <tr>
+                    <th>Student Name</th>
+                    <th>Roll Number</th>
+                    <th>Department</th>
+                    <th>CGPA</th>
+                    <th>Verified Technical Skills</th>
+                    <th>Placement Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:if="${#lists.isEmpty(students)}">
+                    <td colspan="7" style="text-align: center; color: var(--color-text-muted); padding: var(--space-6);">No student profiles registered in database yet.</td>
+                  </tr>
+                  <tr id="noAdminStudentMatchRow" style="display: none;">
+                    <td colspan="7" style="text-align: center; padding: 2.5rem; color: #64748b;">
+                      <div style="font-weight: 600; font-size: var(--font-size-base); margin-bottom: 6px;">No student records match your filter criteria.</div>
+                      <div style="font-size: var(--font-size-xs); margin-bottom: 12px;">Try selecting a different department or clearing the search query.</div>
+                      <a th:href="@{/admin/students}" class="btn btn-secondary btn-sm" style="text-decoration: none;">Reset All Filters</a>
+                    </td>
+                  </tr>
+                  <tr class="admin-student-row" th:each="s : ${students}"
+                      th:data-dept="${s.department}"
+                      th:data-roll="${s.rollNumber}"
+                      th:data-status="${s.placedStatus}">
+                    <td>
+                      <strong th:text="${s.user != null ? s.user.fullName : 'Student'}">Aarav Sharma</strong>
+                      <span class="table-subtext" th:text="${s.user != null ? s.user.email : ''}">aarav.sharma@university.edu</span>
+                    </td>
+                    <td th:text="${s.rollNumber}">2022CSE041</td>
+                    <td th:text="${s.department}">CSE</td>
+                    <td><strong th:text="${s.cgpa}">8.92</strong></td>
+                    <td>
+                      <div th:if="${s.skills != null}">
+                        <span class="tag" th:each="skill : ${#strings.arraySplit(s.skills, ',')}" th:text="${#strings.trim(skill)}">Java</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge"
+                            th:classappend="${s.placedStatus == 'OFFERED' or s.placedStatus == 'ACCEPTED'} ? 'badge-selected' : (${s.placedStatus == 'UNPLACED'} ? 'badge-applied' : 'badge-shortlisted')"
+                            th:text="${s.placedStatus}">Seeking Placement</span>
+                    </td>
+                    <td>
+                      <div class="table-actions">
+                        <form method="post" th:action="@{/admin/students/verify}" style="display:inline;">
+                          <input type="hidden" name="studentId" th:value="${s.id}">
+                          <button type="submit" class="btn btn-secondary btn-sm">Verify</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Institutional Administrator Console</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js?v=2.4}"></script>
+</body>
+</html>

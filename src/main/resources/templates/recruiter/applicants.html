@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Candidate Screening — PlacementAI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+
+  <style>
+    /* Department Grouping Styles */
+    .dept-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+
+    .dept-stat-box {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-3) var(--space-4);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+    }
+
+    .dept-stat-box:hover,
+    .dept-stat-box.active {
+      border-color: var(--color-primary-accent);
+      background-color: var(--color-primary-subtle);
+    }
+
+    .dept-stat-code {
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .dept-stat-count {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-primary);
+      line-height: 1.2;
+      margin: 2px 0;
+    }
+
+    .dept-stat-share {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    .dept-group-card {
+      margin-bottom: var(--space-8);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background-color: var(--color-surface);
+      overflow: hidden;
+    }
+
+    .dept-group-header {
+      background-color: #f1f5f9;
+      border-bottom: 1px solid var(--color-border-dark);
+      padding: var(--space-4) var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .dept-group-title {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .dept-count-badge {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      background-color: var(--color-primary-subtle);
+      color: var(--color-primary);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+    }
+
+    .dept-pills-nav {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-6);
+    }
+
+    .dept-pill-btn {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      padding: 0.375rem 0.875rem;
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+    }
+
+    .dept-pill-btn:hover {
+      background-color: var(--color-surface-hover);
+      color: var(--color-text-primary);
+    }
+
+    .dept-pill-btn.active {
+      background-color: var(--color-primary);
+      color: var(--color-text-inverse);
+      border-color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <!-- Recruiter Sidebar -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Recruiter Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name" th:text="${recruiter != null && recruiter.user != null ? recruiter.user.fullName : (recruiterName != null ? recruiterName : 'Recruiter')}">Recruiter Name</div>
+        <span class="sidebar-user-role" th:text="${company != null ? ('Recruiter • ' + company.name) : (recruiter != null && recruiter.company != null ? ('Recruiter • ' + recruiter.company.name) : 'Recruiter')}">Recruiter &bull; Corporate Partner</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Recruiter Menu</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/recruiter/dashboard}" class="sidebar-link">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="profile.html" th:href="@{/recruiter/profile}" class="sidebar-link">Company Profile</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/recruiter/jobs}" class="sidebar-link">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="create-job.html" th:href="@{/recruiter/create-job}" class="sidebar-link">Create Job</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applicants.html" th:href="@{/recruiter/applicants}" class="sidebar-link active">Applicants</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/recruiter/interviews}" class="sidebar-link">Interviews</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="/logout" th:href="@{/logout}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Candidate Screening Board</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar" th:text="${recruiter != null && recruiter.user != null && recruiter.user.fullName != null && !recruiter.user.fullName.isEmpty() ? recruiter.user.fullName.substring(0, 1).toUpperCase() : 'R'}">R</div>
+            <div class="user-info">
+              <span class="user-display-name" th:text="${recruiter != null && recruiter.user != null ? recruiter.user.fullName : (recruiterName != null ? recruiterName : 'Recruiter')}">Recruiter Name</span>
+              <span class="user-display-role" th:text="${recruiter != null && recruiter.designation != null ? recruiter.designation : 'Campus Talent Partner'}">Lead Campus Talent Partner</span>
+            </div>
+          </div>
+          <a href="/logout" th:href="@{/logout}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Department-Wise Candidate Screening</h1>
+            <p>Inspect applicant volume categorized by academic department for active campus drives, evaluate AI match scores, and progress candidate workflows.</p>
+          </div>
+          <div class="page-actions">
+            <a href="/recruiter/export/applicants-csv" th:href="@{/recruiter/export/applicants-csv}" class="btn btn-secondary" style="text-decoration: none;">Export Department Report</a>
+          </div>
+        </div>
+
+        <!-- Alert -->
+        <div class="alert alert-success flex-between" th:if="${param.updated != null}" style="margin-bottom: var(--space-6);">
+          <span>Applicant status successfully updated in MongoDB!</span>
+          <button type="button" class="alert-dismiss-btn" style="background:none;border:none;cursor:pointer;color:inherit;font-weight:bold;">Dismiss</button>
+        </div>
+
+        <!-- Drive Selector and Global Search Card -->
+        <div class="card" style="margin-bottom: var(--space-6);">
+          <div class="card-body" style="padding: var(--space-4) var(--space-6);">
+            <form method="get" th:action="@{/recruiter/applicants}" id="applicantFilterForm">
+              <div class="flex-between" style="flex-wrap: wrap; gap: var(--space-4);">
+                <div class="flex" style="align-items: center; gap: var(--space-3); flex-wrap: wrap;">
+                  <label class="form-label" style="margin-bottom: 0; font-weight: 600;" for="driveSelect">Active Job Drive:</label>
+                  <select class="form-control" style="width: auto;" id="driveSelect" name="jobId">
+                    <option value="">All Drives &bull; Show All Applicants</option>
+                    <option th:each="j : ${jobs}" th:value="${j.id}" th:selected="${selectedJobId == j.id}"
+                            th:text="${j.title + ' (' + j.roleType + ')'}">Software Engineer</option>
+                  </select>
+
+                  <label class="form-label" style="margin-bottom: 0; font-weight: 600;" for="applicantDeptFilter">Department:</label>
+                  <select class="form-control" style="width: auto;" id="applicantDeptFilter" name="department">
+                    <option value="" th:selected="${selectedDept == null or selectedDept == ''}">All Departments</option>
+                    <option value="CSE" th:selected="${selectedDept == 'CSE'}">CSE - Computer Science &amp; Engineering</option>
+                    <option value="IT" th:selected="${selectedDept == 'IT'}">IT - Information Technology</option>
+                    <option value="CE" th:selected="${selectedDept == 'CE'}">CE - Computer Engineering</option>
+                    <option value="ECE" th:selected="${selectedDept == 'ECE'}">ECE - Electronics &amp; Communication</option>
+                    <option value="EEE" th:selected="${selectedDept == 'EEE'}">EEE - Electrical &amp; Electronics</option>
+                    <option value="Mechanical" th:selected="${selectedDept == 'Mechanical'}">Mechanical Engineering</option>
+                    <option value="Civil" th:selected="${selectedDept == 'Civil'}">Civil Engineering</option>
+                  </select>
+
+                  <label class="form-label" style="margin-bottom: 0; font-weight: 600;" for="applicantStatusFilter">Status:</label>
+                  <select class="form-control" style="width: auto;" id="applicantStatusFilter" name="status">
+                    <option value="" th:selected="${selectedStatus == null or selectedStatus == ''}">All Statuses</option>
+                    <option value="APPLIED" th:selected="${selectedStatus == 'APPLIED'}">Applied</option>
+                    <option value="SHORTLISTED" th:selected="${selectedStatus == 'SHORTLISTED'}">Shortlisted</option>
+                    <option value="TECHNICAL_ROUND" th:selected="${selectedStatus == 'TECHNICAL_ROUND'}">Technical Round</option>
+                    <option value="OFFERED" th:selected="${selectedStatus == 'OFFERED'}">Offered</option>
+                    <option value="ACCEPTED" th:selected="${selectedStatus == 'ACCEPTED'}">Accepted</option>
+                    <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}">Rejected</option>
+                  </select>
+
+                  <button type="submit" class="btn btn-primary btn-sm" id="applyApplicantFilterBtn" style="padding: 0.5rem 1.25rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    Filter
+                  </button>
+                  <a th:href="@{/recruiter/applicants}" class="btn btn-secondary btn-sm" id="resetApplicantFiltersBtn" style="text-decoration: none; padding: 0.5rem 1rem;">Reset</a>
+                </div>
+
+                <div class="flex" style="gap: var(--space-2); align-items: center;">
+                  <input type="text" class="form-control" id="applicantSearchInput" name="query" th:value="${searchQuery}" placeholder="Search candidate, roll, skills..." style="width: 240px;">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Real-time Summary Metric Boxes -->
+        <div class="dept-summary-grid">
+          <div class="dept-stat-box active">
+            <div class="dept-stat-code">Total Candidates</div>
+            <div class="dept-stat-count" th:text="${#lists.size(applicants)}">0</div>
+            <div class="dept-stat-share">MongoDB Pipeline</div>
+          </div>
+          <div class="dept-stat-box">
+            <div class="dept-stat-code">Under Review / Shortlisted</div>
+            <div class="dept-stat-count" th:text="${#lists.size(applicants.?[status == 'SHORTLISTED' or status == 'TECHNICAL_ROUND'])}">0</div>
+            <div class="dept-stat-share">Active Assessments</div>
+          </div>
+          <div class="dept-stat-box">
+            <div class="dept-stat-code">Offers Extended</div>
+            <div class="dept-stat-count" th:text="${#lists.size(applicants.?[status == 'OFFERED' or status == 'ACCEPTED'])}">0</div>
+            <div class="dept-stat-share">Offers Finalized</div>
+          </div>
+        </div>
+
+        <!-- Live Dynamic Applicants Table -->
+        <div class="card" style="margin-top: var(--space-6);">
+          <div class="card-header">
+            <h3 class="dept-group-title">
+              <span>All Registered Candidates</span>
+              <span class="dept-count-badge" id="applicantCountBadge" th:text="${#lists.size(applicants)} + ' Total Applicants'">0 Total Applicants</span>
+            </h3>
+            <span class="badge badge-applied">Live MongoDB Pipeline</span>
+          </div>
+          <div class="table-responsive" style="border: none; border-radius: 0;">
+            <table class="table table-striped" id="applicantMasterTable">
+              <thead>
+                <tr>
+                  <th>Candidate Name</th>
+                  <th>Roll &amp; Department</th>
+                  <th>CGPA</th>
+                  <th>Verified Technical Skills</th>
+                  <th>AI Match Score</th>
+                  <th>Applied Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:if="${#lists.isEmpty(applicants)}">
+                  <td colspan="8" style="text-align: center; color: var(--color-text-muted); padding: var(--space-8);">
+                    <div style="font-weight: 600; font-size: var(--font-size-base); margin-bottom: 6px;">No candidates match your current filter criteria.</div>
+                    <div style="font-size: var(--font-size-xs); margin-bottom: 12px;">Try selecting a different department or status, or clear the search query.</div>
+                    <a th:href="@{/recruiter/applicants}" class="btn btn-secondary btn-sm" style="text-decoration: none;">Reset All Filters</a>
+                  </td>
+                </tr>
+                <tr id="noApplicantMatchRow" style="display: none;">
+                  <td colspan="8" style="text-align: center; padding: var(--space-8); color: var(--color-text-muted);">
+                    <div style="font-weight: 600; font-size: var(--font-size-base); margin-bottom: 6px;">No candidates match your current filter criteria.</div>
+                    <div style="font-size: var(--font-size-xs); margin-bottom: 12px;">Try selecting a different department, status, or clearing the search query.</div>
+                    <button type="button" class="btn btn-secondary btn-sm" id="emptyStateResetBtn">Reset All Filters</button>
+                  </td>
+                </tr>
+                <tr class="applicant-row" th:each="app : ${applicants}"
+                    th:data-dept="${app.student != null ? (app.student.department + ' ' + (app.student.rollNumber != null ? app.student.rollNumber : '')) : ''}"
+                    th:data-status="${app.status}"
+                    th:data-skills="${app.student != null ? app.student.skills : ''}"
+                    th:data-name="${app.student != null && app.student.user != null ? app.student.user.fullName : ''}"
+                    th:data-roll="${app.student != null ? app.student.rollNumber : ''}">
+                  <td>
+                    <strong th:text="${app.student.user != null ? app.student.user.fullName : 'Candidate'}">Aarav Sharma</strong>
+                    <span class="table-subtext" th:text="${app.student.user != null ? app.student.user.email : ''}">aarav.sharma@university.edu</span>
+                  </td>
+                  <td>
+                    <div th:text="${app.student.rollNumber}">2022CSE041</div>
+                    <span class="table-subtext" th:text="${app.student.department}">CSE</span>
+                  </td>
+                  <td><strong th:text="${app.student.cgpa}">8.92</strong></td>
+                  <td>
+                    <div th:if="${app.student.skills != null}">
+                      <span class="tag" th:each="skill : ${#strings.arraySplit(app.student.skills, ',')}" th:text="${#strings.trim(skill)}">Java</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge"
+                          th:classappend="${app.aiMatchScore >= 80 ? 'badge-selected' : 'badge-shortlisted'}"
+                          th:text="${app.aiMatchScore + '% Match'}">92% Match</span>
+                  </td>
+                  <td th:text="${#temporals.format(app.appliedAt, 'dd MMM yyyy')}">14 Aug 2026</td>
+                  <td>
+                    <span class="badge"
+                          th:classappend="${app.status == 'OFFERED' or app.status == 'ACCEPTED'} ? 'badge-selected' : (${app.status == 'SHORTLISTED' or app.status == 'TECHNICAL_ROUND'} ? 'badge-shortlisted' : (${app.status == 'REJECTED'} ? 'badge-rejected' : 'badge-review'))"
+                          th:text="${app.status}">Shortlisted</span>
+                  </td>
+                  <td>
+                    <div class="table-actions" style="gap: 4px; flex-wrap: wrap;">
+                      <form method="post" th:action="@{/recruiter/update-applicant-status}" style="display:inline;">
+                        <input type="hidden" name="applicationId" th:value="${app.id}">
+                        <input type="hidden" name="status" value="SHORTLISTED">
+                        <button type="submit" class="btn btn-primary btn-sm">Shortlist</button>
+                      </form>
+                      <a href="interviews.html" th:href="@{/recruiter/interviews}" class="btn btn-secondary btn-sm">Interview</a>
+                      <form method="post" th:action="@{/recruiter/update-applicant-status}" style="display:inline;">
+                        <input type="hidden" name="applicationId" th:value="${app.id}">
+                        <input type="hidden" name="status" value="OFFERED">
+                        <button type="submit" class="btn btn-success btn-sm">Offer</button>
+                      </form>
+                      <form method="post" th:action="@{/recruiter/update-applicant-status}" style="display:inline;">
+                        <input type="hidden" name="applicationId" th:value="${app.id}">
+                        <input type="hidden" name="status" value="REJECTED">
+                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Recruiter Enterprise Portal</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js?v=2.4}"></script>
+</body>
+</html>

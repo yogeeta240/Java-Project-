@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <!-- Global Sidebar Fragment -->
+  <aside class="app-sidebar" id="appSidebar" th:fragment="sidebar(currentRole, activeTab)">
+    <div class="sidebar-brand">
+      <div class="brand-icon">PM</div>
+      <div>
+        <div class="brand-text">PlacementAI</div>
+        <div class="brand-portal">University Portal</div>
+      </div>
+    </div>
+
+    <div class="sidebar-user-card">
+      <div class="sidebar-user-name" th:text="${userName != null ? userName : 'Portal User'}">Portal User</div>
+      <span class="sidebar-user-role" th:text="${currentRole != null ? currentRole : 'STUDENT'}">STUDENT</span>
+    </div>
+
+    <ul class="sidebar-menu">
+      <!-- Student Navigation Section -->
+      <li th:if="${currentRole == 'STUDENT' or currentRole == null}">
+        <div class="sidebar-heading">Student Menu</div>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'STUDENT' or currentRole == null}">
+        <a th:href="@{/student/dashboard}" class="sidebar-link" th:classappend="${activeTab == 'dashboard' ? 'active' : ''}">
+          Dashboard
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'STUDENT' or currentRole == null}">
+        <a th:href="@{/student/profile}" class="sidebar-link" th:classappend="${activeTab == 'profile' ? 'active' : ''}">
+          My Profile
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'STUDENT' or currentRole == null}">
+        <a th:href="@{/student/jobs}" class="sidebar-link" th:classappend="${activeTab == 'jobs' ? 'active' : ''}">
+          Jobs
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'STUDENT' or currentRole == null}">
+        <a th:href="@{/student/applications}" class="sidebar-link" th:classappend="${activeTab == 'applications' ? 'active' : ''}">
+          My Applications
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'STUDENT' or currentRole == null}">
+        <a th:href="@{/student/interviews}" class="sidebar-link" th:classappend="${activeTab == 'interviews' ? 'active' : ''}">
+          Interviews
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'STUDENT' or currentRole == null}">
+        <a th:href="@{/student/recommendations}" class="sidebar-link" th:classappend="${activeTab == 'recommendations' ? 'active' : ''}">
+          Recommendations
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'STUDENT' or currentRole == null}">
+        <a th:href="@{/student/feedback}" class="sidebar-link" th:classappend="${activeTab == 'feedback' ? 'active' : ''}">
+          Feedback
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'STUDENT' or currentRole == null}">
+        <a th:href="@{/student/settings}" class="sidebar-link" th:classappend="${activeTab == 'settings' ? 'active' : ''}">
+          Settings
+        </a>
+      </li>
+
+      <!-- Recruiter Navigation Section -->
+      <li th:if="${currentRole == 'RECRUITER'}">
+        <div class="sidebar-heading">Recruiter Menu</div>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'RECRUITER'}">
+        <a th:href="@{/recruiter/dashboard}" class="sidebar-link" th:classappend="${activeTab == 'dashboard' ? 'active' : ''}">
+          Dashboard
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'RECRUITER'}">
+        <a th:href="@{/recruiter/profile}" class="sidebar-link" th:classappend="${activeTab == 'profile' ? 'active' : ''}">
+          Company Profile
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'RECRUITER'}">
+        <a th:href="@{/recruiter/jobs}" class="sidebar-link" th:classappend="${activeTab == 'jobs' ? 'active' : ''}">
+          Jobs
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'RECRUITER'}">
+        <a th:href="@{/recruiter/applicants}" class="sidebar-link" th:classappend="${activeTab == 'applicants' ? 'active' : ''}">
+          Applicants
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'RECRUITER'}">
+        <a th:href="@{/recruiter/interviews}" class="sidebar-link" th:classappend="${activeTab == 'interviews' ? 'active' : ''}">
+          Interviews
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'RECRUITER'}">
+        <a th:href="@{/recruiter/settings}" class="sidebar-link" th:classappend="${activeTab == 'settings' ? 'active' : ''}">
+          Settings
+        </a>
+      </li>
+
+      <!-- Admin Navigation Section -->
+      <li th:if="${currentRole == 'ADMIN'}">
+        <div class="sidebar-heading">Admin Menu</div>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'ADMIN'}">
+        <a th:href="@{/admin/dashboard}" class="sidebar-link" th:classappend="${activeTab == 'dashboard' ? 'active' : ''}">
+          Dashboard
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'ADMIN'}">
+        <a th:href="@{/admin/students}" class="sidebar-link" th:classappend="${activeTab == 'students' ? 'active' : ''}">
+          Students
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'ADMIN'}">
+        <a th:href="@{/admin/recruiters}" class="sidebar-link" th:classappend="${activeTab == 'recruiters' ? 'active' : ''}">
+          Recruiters
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'ADMIN'}">
+        <a th:href="@{/admin/companies}" class="sidebar-link" th:classappend="${activeTab == 'companies' ? 'active' : ''}">
+          Companies
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'ADMIN'}">
+        <a th:href="@{/admin/jobs}" class="sidebar-link" th:classappend="${activeTab == 'jobs' ? 'active' : ''}">
+          Jobs
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'ADMIN'}">
+        <a th:href="@{/admin/applications}" class="sidebar-link" th:classappend="${activeTab == 'applications' ? 'active' : ''}">
+          Applications
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'ADMIN'}">
+        <a th:href="@{/admin/interviews}" class="sidebar-link" th:classappend="${activeTab == 'interviews' ? 'active' : ''}">
+          Interviews
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'ADMIN'}">
+        <a th:href="@{/admin/feedback}" class="sidebar-link" th:classappend="${activeTab == 'feedback' ? 'active' : ''}">
+          Feedback
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'ADMIN'}">
+        <a th:href="@{/admin/analytics}" class="sidebar-link" th:classappend="${activeTab == 'analytics' ? 'active' : ''}">
+          Analytics
+        </a>
+      </li>
+      <li class="sidebar-item" th:if="${currentRole == 'ADMIN'}">
+        <a th:href="@{/admin/settings}" class="sidebar-link" th:classappend="${activeTab == 'settings' ? 'active' : ''}">
+          Settings
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <form th:action="@{/logout}" method="post">
+        <button type="submit" class="sidebar-logout-btn">
+          Sign Out
+        </button>
+      </form>
+    </div>
+  </aside>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — PlacementAI</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <!-- Admin Sidebar -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Admin Console</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name" th:text="${adminName != null ? adminName : 'Dr. Rajesh Varma'}">Dr. Rajesh Varma</div>
+        <span class="sidebar-user-role">Head, Placement Cell</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Admin Operations</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/admin/dashboard}" class="sidebar-link active">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="students.html" th:href="@{/admin/students}" class="sidebar-link">Students</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="recruiters.html" th:href="@{/admin/recruiters}" class="sidebar-link">Recruiters</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="companies.html" th:href="@{/admin/companies}" class="sidebar-link">Companies</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/admin/jobs}" class="sidebar-link">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applications.html" th:href="@{/admin/applications}" class="sidebar-link">Applications</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/admin/interviews}" class="sidebar-link">Interviews</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="feedback.html" th:href="@{/admin/feedback}" class="sidebar-link">Feedback</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="analytics.html" th:href="@{/admin/analytics}" class="sidebar-link">Analytics</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="/logout" th:href="@{/logout}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">University Placement Administration</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar">RV</div>
+            <div class="user-info">
+              <span class="user-display-name">Dr. Rajesh Varma</span>
+              <span class="user-display-role">Institutional Administrator</span>
+            </div>
+          </div>
+          <a href="/logout" th:href="@{/logout}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Executive Placement Dashboard</h1>
+            <p>Institutional oversight for campus recruitment drives, company authorizations, student placement progress, and interview coordination.</p>
+          </div>
+          <div class="page-actions">
+            <a href="analytics.html" th:href="@{/admin/analytics}" class="btn btn-primary">Generate Placement Report</a>
+            <a href="companies.html" th:href="@{/admin/companies}" class="btn btn-secondary">Review Approvals</a>
+          </div>
+        </div>
+
+        <!-- Vertical Summary Metric Items -->
+        <div class="dashboard-items-vertical">
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Total Students</div>
+              <div class="stat-helper">Enrolled in placement cycle</div>
+            </div>
+            <div class="stat-value" th:text="${totalStudents != null ? totalStudents : '1,420'}">1,420</div>
+          </div>
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Total Recruiters</div>
+              <div class="stat-helper">Verified talent partners</div>
+            </div>
+            <div class="stat-value" th:text="${totalRecruiters != null ? totalRecruiters : '64'}">64</div>
+          </div>
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Total Companies</div>
+              <div class="stat-helper">Partner enterprise organizations</div>
+            </div>
+            <div class="stat-value" th:text="${totalCompanies != null ? totalCompanies : '48'}">48</div>
+          </div>
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Active Jobs</div>
+              <div class="stat-helper">Live campus recruitment campaigns</div>
+            </div>
+            <div class="stat-value" th:text="${activeDrivesCount != null ? activeDrivesCount : '38'}">38</div>
+          </div>
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Applications Processed</div>
+              <div class="stat-helper">Student drive submissions logged</div>
+            </div>
+            <div class="stat-value" th:text="${totalApplications != null ? totalApplications : 0}">0</div>
+          </div>
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Average Package</div>
+              <div class="stat-helper">Institutional average CTC</div>
+            </div>
+            <div class="stat-value" th:text="${avgPackage != null ? avgPackage : '18.5 LPA'}">18.5 LPA</div>
+          </div>
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Placements Completed</div>
+              <div class="stat-helper"><span th:text="${placedCount != null ? placedCount : '0'}">0</span> candidates secured offers</div>
+            </div>
+            <div class="stat-value" th:text="${placementRate != null ? placementRate + '%' : '0.0%'}">84.2%</div>
+          </div>
+        </div>
+
+        <!-- Vertical Section: Recent Applications & Recent Placement Drives -->
+        <div class="dashboard-stack-vertical">
+          <!-- Recent Applications Activity Card -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Recent Student Applications</h3>
+              <a href="applications.html" th:href="@{/admin/applications}" class="btn btn-secondary btn-sm">All Applications</a>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Student</th>
+                      <th>Target Drive</th>
+                      <th>Applied Date</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:if="${#lists.isEmpty(recentApplications)}">
+                      <td colspan="4" style="text-align: center; padding: 1.5rem; color: #64748b;">
+                        No applications recorded yet.
+                      </td>
+                    </tr>
+                    <tr th:each="app : ${recentApplications}">
+                      <td>
+                        <strong th:text="${app.student != null && app.student.user != null ? app.student.user.fullName : 'Student'}">Aarav Sharma</strong>
+                        <span class="table-subtext" th:text="${app.student != null ? app.student.rollNumber : ''}">2022CSE041</span>
+                      </td>
+                      <td th:text="${app.job != null ? (app.job.company.name + ' - ' + app.job.title) : 'Job Drive'}">Microsoft - Software Engineer</td>
+                      <td th:text="${app.appliedAt != null ? #temporals.format(app.appliedAt, 'dd MMM yyyy') : 'Recent'}">14 Aug 2026</td>
+                      <td>
+                        <span class="badge"
+                              th:classappend="${app.status == 'OFFERED' or app.status == 'ACCEPTED'} ? 'badge-selected' : (${app.status == 'SHORTLISTED' or app.status == 'TECHNICAL_ROUND'} ? 'badge-shortlisted' : (${app.status == 'REJECTED'} ? 'badge-rejected' : 'badge-review'))"
+                              th:text="${app.status}">Applied</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Campus Placement Drives -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Active Recruitment Drives</h3>
+              <a href="jobs.html" th:href="@{/admin/jobs}" class="btn btn-secondary btn-sm">All Job Drives</a>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Company</th>
+                      <th>Role</th>
+                      <th>Package</th>
+                      <th>Deadline</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:if="${#lists.isEmpty(recentJobs)}">
+                      <td colspan="5" style="text-align: center; padding: 1.5rem; color: #64748b;">
+                        No campus recruitment drives open.
+                      </td>
+                    </tr>
+                    <tr th:each="job : ${recentJobs}">
+                      <td><strong th:text="${job.company != null ? job.company.name : 'Enterprise'}">Microsoft</strong></td>
+                      <td th:text="${job.title}">Software Engineer</td>
+                      <td th:text="${job.packageCtc}">24.0 LPA</td>
+                      <td th:text="${job.deadline != null ? #temporals.format(job.deadline, 'dd MMM yyyy') : 'Rolling'}">20 Sep 2026</td>
+                      <td>
+                        <span class="badge" th:classappend="${job.status == 'OPEN' ? 'badge-selected' : 'badge-rejected'}" th:text="${job.status}">OPEN</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Institutional Administrator Console</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>

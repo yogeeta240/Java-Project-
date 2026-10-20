@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frontend Design System — PlacementAI</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Application CSS Stylesheets -->
+  <link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">University Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name">Dr. Rajesh Varma</div>
+        <span class="sidebar-user-role">Placement Officer</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Navigation</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link active">Design System</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">Student Portal</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">Recruiter Portal</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">Admin Portal</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">Job Listings</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">Interviews</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">Reports &amp; Analytics</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button type="button" class="sidebar-logout-btn">
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <!-- Top Navbar -->
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Phase 1: Frontend Design System</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar">RV</div>
+            <div class="user-info">
+              <span class="user-display-name">Dr. Rajesh Varma</span>
+              <span class="user-display-role">Administrator</span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm">Sign Out</button>
+        </div>
+      </header>
+
+      <!-- App Content Container -->
+      <main class="app-content">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Frontend Design System Foundation</h1>
+            <p>Standardized UI components, layout shell, color tokens, typography, and responsive controls for the Placement Portal.</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="btn btn-secondary">Documentation</button>
+            <button type="button" class="btn btn-primary">Primary Action</button>
+          </div>
+        </div>
+
+        <!-- Alert Notifications Showcase -->
+        <div class="alert alert-info flex-between">
+          <span>System Status: Frontend Design System initialized successfully. Strict zero-emoji policy active.</span>
+          <button type="button" class="alert-dismiss-btn" style="background:none; border:none; cursor:pointer; color:inherit; font-weight:bold;">Dismiss</button>
+        </div>
+
+        <div class="alert alert-success flex-between">
+          <span>Verification Passed: Responsive typography, buttons, forms, tables, and status badges loaded.</span>
+          <button type="button" class="alert-dismiss-btn" style="background:none; border:none; cursor:pointer; color:inherit; font-weight:bold;">Dismiss</button>
+        </div>
+
+        <!-- Metric Stat Cards Grid -->
+        <div class="grid grid-4" style="margin-bottom: var(--space-8);">
+          <div class="stat-card">
+            <div class="stat-label">Total Students</div>
+            <div class="stat-value">1,420</div>
+            <div class="stat-helper">Enrolled across 7 engineering departments</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active Drives</div>
+            <div class="stat-value">38</div>
+            <div class="stat-helper">Corporate recruitment campaigns ongoing</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Placements Completed</div>
+            <div class="stat-value">84%</div>
+            <div class="stat-helper">Higher compared to preceding academic session</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Highest Package</div>
+            <div class="stat-value">28.5 LPA</div>
+            <div class="stat-helper">Secured in Computer Science Department</div>
+          </div>
+        </div>
+
+        <!-- Component Showcase Section: Buttons & Badges -->
+        <div class="grid grid-2" style="margin-bottom: var(--space-8);">
+          <!-- Buttons Card -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Button Styles</h3>
+            </div>
+            <div class="card-body">
+              <p>Standard button hierarchy used across Student, Recruiter, and Admin portals:</p>
+              <div class="flex gap-2" style="flex-wrap: wrap; margin-bottom: var(--space-4);">
+                <button type="button" class="btn btn-primary">Primary Action</button>
+                <button type="button" class="btn btn-secondary">Secondary Action</button>
+                <button type="button" class="btn btn-success">Approve / Shortlist</button>
+                <button type="button" class="btn btn-danger">Reject / Delete</button>
+                <button type="button" class="btn btn-outline">Outline Action</button>
+                <button type="button" class="btn btn-primary" disabled>Disabled State</button>
+              </div>
+
+              <p>Button sizes:</p>
+              <div class="flex gap-2" style="align-items: center; flex-wrap: wrap;">
+                <button type="button" class="btn btn-primary btn-sm">Small Button</button>
+                <button type="button" class="btn btn-primary">Standard Button</button>
+                <button type="button" class="btn btn-primary btn-lg">Large Action</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Badges & Tags Card -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Status Badges &amp; Skill Tags</h3>
+            </div>
+            <div class="card-body">
+              <p>Application and recruitment workflow status badges:</p>
+              <div class="flex gap-2" style="flex-wrap: wrap; margin-bottom: var(--space-4);">
+                <span class="badge badge-applied">Applied</span>
+                <span class="badge badge-review">Under Review</span>
+                <span class="badge badge-shortlisted">Shortlisted</span>
+                <span class="badge badge-scheduled">Interview Scheduled</span>
+                <span class="badge badge-selected">Selected</span>
+                <span class="badge badge-rejected">Rejected</span>
+              </div>
+
+              <p>Skill matching tags (AI Recommendation view):</p>
+              <div>
+                <span class="tag tag-matched">Java (Matched)</span>
+                <span class="tag tag-matched">Spring Boot (Matched)</span>
+                <span class="tag tag-matched">SQL (Matched)</span>
+                <span class="tag tag-missing">Docker (Missing)</span>
+                <span class="tag tag-missing">Kubernetes (Missing)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Component Showcase Section: Forms -->
+        <div class="card" style="margin-bottom: var(--space-8);">
+          <div class="card-header">
+            <h3>Standard Form Component Grid</h3>
+          </div>
+          <div class="card-body">
+            <form>
+              <div class="form-row">
+                <div class="form-col-6">
+                  <div class="form-group">
+                    <label class="form-label required" for="sampleFullName">Full Name</label>
+                    <input type="text" id="sampleFullName" class="form-control" placeholder="Enter student or recruiter full name" value="Aarav Sharma">
+                    <span class="form-helper">Official name as recorded in university records.</span>
+                  </div>
+                </div>
+
+                <div class="form-col-6">
+                  <div class="form-group">
+                    <label class="form-label required" for="sampleEmail">Institutional Email</label>
+                    <input type="email" id="sampleEmail" class="form-control" placeholder="student@university.edu" value="aarav.sharma@university.edu">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col-4">
+                  <div class="form-group">
+                    <label class="form-label required" for="sampleDept">Academic Department</label>
+                    <select id="sampleDept" class="form-control">
+                      <option value="CSE" selected>Computer Science &amp; Engineering (CSE)</option>
+                      <option value="CE">Computer Engineering (CE)</option>
+                      <option value="ECE">Electronics &amp; Communication (ECE)</option>
+                      <option value="EEE">Electrical &amp; Electronics (EEE)</option>
+                      <option value="Mechanical">Mechanical Engineering</option>
+                      <option value="Civil">Civil Engineering</option>
+                      <option value="Other">Other Disciplines</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-col-4">
+                  <div class="form-group">
+                    <label class="form-label required" for="sampleCgpa">Cumulative GPA (CGPA)</label>
+                    <input type="number" id="sampleCgpa" class="form-control" placeholder="0.00 - 10.00" step="0.01" value="8.92">
+                  </div>
+                </div>
+
+                <div class="form-col-4">
+                  <div class="form-group">
+                    <label class="form-label required" for="sampleGradYear">Graduation Year</label>
+                    <input type="number" id="sampleGradYear" class="form-control" value="2026">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="sampleNotes">Profile Statement or Bio</label>
+                <textarea id="sampleNotes" class="form-control" placeholder="Describe career aspirations, core skills, or placement preferences...">Senior undergraduate student specializing in distributed systems, backend engineering with Spring Boot, and database architectures.</textarea>
+              </div>
+
+              <div class="form-check">
+                <input type="checkbox" id="sampleAgreement" class="form-check-input" checked>
+                <label for="sampleAgreement" class="form-check-label">I certify that the academic and profile details submitted above are accurate and verifiable.</label>
+              </div>
+
+              <div class="form-actions">
+                <button type="reset" class="btn btn-secondary">Reset Form</button>
+                <button type="button" class="btn btn-primary">Save Changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Component Showcase Section: Data Table -->
+        <div class="card" style="margin-bottom: var(--space-8);">
+          <div class="card-header">
+            <h3>Responsive University Placement Records Table</h3>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Roll Number</th>
+                    <th>Candidate Name</th>
+                    <th>Department</th>
+                    <th>CGPA</th>
+                    <th>Target Company</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>2022CSE041</strong></td>
+                    <td>
+                      <div>Aarav Sharma</div>
+                      <span class="table-subtext">aarav.sharma@university.edu</span>
+                    </td>
+                    <td>CSE</td>
+                    <td>8.92</td>
+                    <td>Microsoft Corporation</td>
+                    <td>Software Engineer</td>
+                    <td><span class="badge badge-shortlisted">Shortlisted</span></td>
+                    <td>
+                      <div class="table-actions">
+                        <button type="button" class="btn btn-secondary btn-sm">View</button>
+                        <button type="button" class="btn btn-success btn-sm">Approve</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>2022ECE018</strong></td>
+                    <td>
+                      <div>Pooja Patel</div>
+                      <span class="table-subtext">pooja.patel@university.edu</span>
+                    </td>
+                    <td>ECE</td>
+                    <td>8.45</td>
+                    <td>Qualcomm Technologies</td>
+                    <td>Firmware Engineer</td>
+                    <td><span class="badge badge-scheduled">Interview Scheduled</span></td>
+                    <td>
+                      <div class="table-actions">
+                        <button type="button" class="btn btn-secondary btn-sm">View</button>
+                        <button type="button" class="btn btn-secondary btn-sm">Reschedule</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>2022CSE104</strong></td>
+                    <td>
+                      <div>Rohan Mehta</div>
+                      <span class="table-subtext">rohan.mehta@university.edu</span>
+                    </td>
+                    <td>CSE</td>
+                    <td>9.10</td>
+                    <td>Google India</td>
+                    <td>Associate Cloud Engineer</td>
+                    <td><span class="badge badge-selected">Selected</span></td>
+                    <td>
+                      <div class="table-actions">
+                        <button type="button" class="btn btn-secondary btn-sm">Offer Letter</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>2022ME052</strong></td>
+                    <td>
+                      <div>Karan Singh</div>
+                      <span class="table-subtext">karan.singh@university.edu</span>
+                    </td>
+                    <td>Mechanical</td>
+                    <td>7.60</td>
+                    <td>Tata Motors</td>
+                    <td>Graduate Engineer Trainee</td>
+                    <td><span class="badge badge-review">Under Review</span></td>
+                    <td>
+                      <div class="table-actions">
+                        <button type="button" class="btn btn-secondary btn-sm">View</button>
+                        <button type="button" class="btn btn-danger btn-sm">Reject</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>2022CE033</strong></td>
+                    <td>
+                      <div>Sneha Kulkarni</div>
+                      <span class="table-subtext">sneha.k@university.edu</span>
+                    </td>
+                    <td>CE</td>
+                    <td>7.20</td>
+                    <td>Infosys Limited</td>
+                    <td>Systems Engineer</td>
+                    <td><span class="badge badge-rejected">Rejected</span></td>
+                    <td>
+                      <div class="table-actions">
+                        <button type="button" class="btn btn-secondary btn-sm">Details</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State Preview -->
+        <div class="card" style="margin-bottom: var(--space-8);">
+          <div class="card-header">
+            <h3>Standard Empty State Demonstration</h3>
+          </div>
+          <div class="card-body">
+            <div class="empty-state">
+              <h4 class="empty-state-title">No upcoming interviews scheduled</h4>
+              <p class="empty-state-description">Your application pipeline currently has no interviews slated for this week. Explore recommended job listings to apply for new campus drives.</p>
+              <button type="button" class="btn btn-primary">Browse Available Jobs</button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Academic Enterprise Portal &bull; All Rights Reserved</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Minimal Application JavaScript -->
+  <script src="../static/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>

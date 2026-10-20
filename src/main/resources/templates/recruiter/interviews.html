@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule Interviews — PlacementAI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Recruiter Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name" th:text="${recruiter != null && recruiter.user != null ? recruiter.user.fullName : (recruiterName != null ? recruiterName : 'Recruiter')}">Recruiter Name</div>
+        <span class="sidebar-user-role" th:text="${company != null ? ('Recruiter • ' + company.name) : (recruiter != null && recruiter.company != null ? ('Recruiter • ' + recruiter.company.name) : 'Recruiter')}">Recruiter &bull; Corporate Partner</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Recruiter Menu</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/recruiter/dashboard}" class="sidebar-link">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="profile.html" th:href="@{/recruiter/profile}" class="sidebar-link">Company Profile</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/recruiter/jobs}" class="sidebar-link">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="create-job.html" th:href="@{/recruiter/create-job}" class="sidebar-link">Create Job</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applicants.html" th:href="@{/recruiter/applicants}" class="sidebar-link">Applicants</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/recruiter/interviews}" class="sidebar-link active">Interviews</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="/logout" th:href="@{/logout}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Interview Coordination</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar" th:text="${recruiter != null && recruiter.user != null && recruiter.user.fullName != null && !recruiter.user.fullName.isEmpty() ? recruiter.user.fullName.substring(0, 1).toUpperCase() : 'R'}">R</div>
+            <div class="user-info">
+              <span class="user-display-name" th:text="${recruiter != null && recruiter.user != null ? recruiter.user.fullName : (recruiterName != null ? recruiterName : 'Recruiter')}">Recruiter Name</span>
+              <span class="user-display-role" th:text="${recruiter != null && recruiter.designation != null ? recruiter.designation : 'Campus Talent Partner'}">Lead Campus Talent Partner</span>
+            </div>
+          </div>
+          <a href="/logout" th:href="@{/logout}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Campus Interview Management</h1>
+            <p>Schedule assessment slots, dispatch virtual room meeting links, and monitor ongoing evaluation panels.</p>
+          </div>
+        </div>
+
+        <!-- Schedule Interview Form Card -->
+        <div class="card" style="margin-bottom: var(--space-8);">
+          <div class="card-header">
+            <h3>Schedule Assessment Slot</h3>
+          </div>
+          <div class="card-body">
+            <form th:action="@{/recruiter/schedule-interview}" method="POST">
+              <div class="form-row">
+                <div class="form-col-6">
+                  <div class="form-group">
+                    <label class="form-label required" for="candidateSelect">Candidate</label>
+                    <select id="candidateSelect" name="studentId" class="form-control" required>
+                      <option value="" disabled selected>-- Select Shortlisted Student --</option>
+                      <option th:each="c : ${candidates}"
+                              th:value="${c.id}"
+                              th:text="${c.user != null ? c.user.fullName : 'Student'} + ' (' + ${c.rollNumber} + ' &bull; CGPA: ' + ${c.cgpa} + ')'">
+                        Aarav Sharma (2022CSE041 &bull; CGPA: 8.92)
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-col-6">
+                  <div class="form-group">
+                    <label class="form-label required" for="jobSelect">Target Campus Drive</label>
+                    <select id="jobSelect" name="jobId" class="form-control" required>
+                      <option value="" disabled selected>-- Select Job Role --</option>
+                      <option th:each="j : ${jobs}"
+                              th:value="${j.id}"
+                              th:text="${j.title} + ' (' + ${j.packageCtc} + ')'">
+                        Software Engineer (24.0 LPA)
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col-4">
+                  <div class="form-group">
+                    <label class="form-label required" for="interviewDate">Assessment Date</label>
+                    <input type="date" id="interviewDate" name="interviewDate" class="form-control" required>
+                  </div>
+                </div>
+                <div class="form-col-4">
+                  <div class="form-group">
+                    <label class="form-label required" for="interviewTime">Time Slot</label>
+                    <input type="time" id="interviewTime" name="interviewTime" class="form-control" value="10:30" required>
+                  </div>
+                </div>
+                <div class="form-col-4">
+                  <div class="form-group">
+                    <label class="form-label required" for="interviewType">Evaluation Round</label>
+                    <select id="interviewType" name="roundName" class="form-control">
+                      <option value="Technical Round 1" selected>Technical Round 1 (System Design &amp; Coding)</option>
+                      <option value="Technical Round 2">Technical Round 2 (Algorithms &amp; Architecture)</option>
+                      <option value="Managerial">Managerial &amp; Cultural Fit</option>
+                      <option value="HR">HR &amp; Executive Closing</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required" for="meetingLink">Meeting URL or Campus Venue</label>
+                <input type="text" id="meetingLink" name="meetingLinkOrVenue" class="form-control" placeholder="e.g. https://teams.microsoft.com/... or Placement Lab 2" value="https://meet.google.com/abc-defg-hij">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="notes">Instructions / Panel Notes</label>
+                <textarea id="notes" name="notes" class="form-control" rows="3" placeholder="Candidate briefing instructions, panel members assigned, or assessment expectations..."></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Dispatch Schedule Invitation</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Scheduled Interviews Table Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Confirmed Interview Assessments</h3>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Candidate</th>
+                    <th>Target Role</th>
+                    <th>Date &amp; Time</th>
+                    <th>Round Type</th>
+                    <th>Venue / Link</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:if="${#lists.isEmpty(interviews)}">
+                    <td colspan="7" style="text-align: center; padding: 2rem; color: #64748b;">
+                      No interview slots currently scheduled. Use the form above to invite candidates.
+                    </td>
+                  </tr>
+                  <tr th:each="slot : ${interviews}">
+                    <td>
+                      <strong th:text="${slot.student != null && slot.student.user != null ? slot.student.user.fullName : 'Candidate'}">Aarav Sharma</strong>
+                      <span class="table-subtext" th:text="${slot.student != null ? slot.student.rollNumber : ''}">2022CSE041</span>
+                    </td>
+                    <td th:text="${slot.job != null ? slot.job.title : 'Job Role'}">Software Engineer</td>
+                    <td th:text="${slot.scheduledTime != null ? #temporals.format(slot.scheduledTime, 'dd MMM yyyy, hh:mm a') : 'Scheduled'}">12 Sep 2026, 10:30 AM</td>
+                    <td th:text="${slot.roundName}">Technical Round 1</td>
+                    <td>
+                      <a th:if="${slot.meetingLinkOrVenue != null && slot.meetingLinkOrVenue.startsWith('http')}"
+                         th:href="${slot.meetingLinkOrVenue}" target="_blank" style="color: var(--color-primary); font-size: var(--font-size-xs);">Join Online</a>
+                      <span th:unless="${slot.meetingLinkOrVenue != null && slot.meetingLinkOrVenue.startsWith('http')}"
+                            th:text="${slot.meetingLinkOrVenue}">Campus Venue</span>
+                    </td>
+                    <td><span class="badge badge-scheduled" th:text="${slot.status}">Confirmed</span></td>
+                    <td>
+                      <div class="table-actions">
+                        <a th:if="${slot.meetingLinkOrVenue != null && slot.meetingLinkOrVenue.startsWith('http')}"
+                           th:href="${slot.meetingLinkOrVenue}" target="_blank" class="btn btn-primary btn-sm">Join</a>
+                        <span th:unless="${slot.meetingLinkOrVenue != null && slot.meetingLinkOrVenue.startsWith('http')}"
+                              class="btn btn-secondary btn-sm">Scheduled</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Recruiter Enterprise Portal</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>

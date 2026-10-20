@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interview Feedback — PlacementAI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Student Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name" th:text="${student != null && student.user != null ? student.user.fullName : 'Student'}">Aarav Sharma</div>
+        <span class="sidebar-user-role" th:text="${student != null && student.rollNumber != null ? ('Roll: ' + student.rollNumber) : 'Student'}">Student &bull; CSE</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Student Menu</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/student/dashboard}" class="sidebar-link">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="profile.html" th:href="@{/student/profile}" class="sidebar-link">My Profile</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/student/jobs}" class="sidebar-link">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applications.html" th:href="@{/student/applications}" class="sidebar-link">My Applications</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/student/interviews}" class="sidebar-link">Interviews</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="recommendations.html" th:href="@{/student/recommendations}" class="sidebar-link">Recommendations</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="feedback.html" th:href="@{/student/feedback}" class="sidebar-link active">Feedback</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="/logout" th:href="@{/logout}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Confidential Feedback</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar" th:text="${student != null ? student.avatarInitials : 'ST'}">AS</div>
+            <div class="user-info">
+              <span class="user-display-name" th:text="${student != null && student.user != null ? student.user.fullName : 'Student'}">Aarav Sharma</span>
+              <span class="user-display-role" th:text="${student != null && student.rollNumber != null ? ('Roll: ' + student.rollNumber) : ''}">Roll: 2022CSE041</span>
+            </div>
+          </div>
+          <a href="/logout" th:href="@{/logout}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Interview Experience Feedback</h1>
+            <p>Submit confidential post-interview evaluations to assist the Training &amp; Placement Cell. Responses are private to your account and placement administrators.</p>
+          </div>
+        </div>
+
+        <!-- Privacy Assurance Banner -->
+        <div class="alert alert-info flex-between" style="margin-bottom: var(--space-6);">
+          <span>Privacy Guaranteed: Feedback submitted here is strictly confidential and never visible to recruiters or peer students.</span>
+        </div>
+
+        <!-- Success Banner -->
+        <div class="alert alert-success flex-between" th:if="${param.submitted != null}" style="margin-bottom: var(--space-6);">
+          <span>Your interview feedback has been successfully recorded in the MongoDB database!</span>
+          <button type="button" class="alert-dismiss-btn" style="background:none;border:none;cursor:pointer;color:inherit;font-weight:bold;">Dismiss</button>
+        </div>
+
+        <div class="grid grid-2" style="margin-bottom: var(--space-8);">
+          <!-- Feedback Submission Form -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Submit Interview Feedback</h3>
+            </div>
+            <div class="card-body">
+              <form method="post" th:action="@{/student/feedback}">
+                <div class="form-group" th:if="${not #lists.isEmpty(applications)}">
+                  <label class="form-label" for="feedbackApp">Related Application Drive</label>
+                  <select id="feedbackApp" name="applicationId" class="form-control">
+                    <option value="">-- General / Other Drive --</option>
+                    <option th:each="app : ${applications}" th:value="${app.id}" th:text="${app.job.company.name + ' - ' + app.job.title}">Microsoft - Software Engineer</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-col-6">
+                    <div class="form-group">
+                      <label class="form-label required" for="feedbackCompany">Company Name</label>
+                      <input type="text" id="feedbackCompany" name="companyOrDrive" class="form-control" placeholder="e.g. Microsoft Corporation" required>
+                    </div>
+                  </div>
+                  <div class="form-col-6">
+                    <div class="form-group">
+                      <label class="form-label required" for="feedbackRating">Overall Experience Rating</label>
+                      <select id="feedbackRating" name="rating" class="form-control">
+                        <option value="5" selected>5 - Excellent / Highly Professional</option>
+                        <option value="4">4 - Good / Well Organized</option>
+                        <option value="3">3 - Satisfactory / Standard Procedure</option>
+                        <option value="2">2 - Needs Improvement</option>
+                        <option value="1">1 - Poor / Unsatisfactory</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required" for="feedbackComments">Evaluation Notes &amp; Experience</label>
+                  <textarea id="feedbackComments" name="feedbackText" class="form-control" rows="4" placeholder="Summarize technical topics, questions asked, problem types, and interview panel feedback..." required></textarea>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Submit Private Feedback</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- My Feedback History -->
+          <div class="card">
+            <div class="card-header">
+              <h3>My Submitted Feedback</h3>
+              <span class="badge badge-applied">Confidential</span>
+            </div>
+            <div class="card-body" id="feedbackTimelineList">
+              <div th:if="${#lists.isEmpty(feedbacks)}" style="color: var(--color-text-muted); text-align: center; padding: var(--space-4);">
+                No feedback recorded yet. Submit your first interview feedback above!
+              </div>
+              <div th:each="f : ${feedbacks}" style="border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-4); margin-bottom: var(--space-4);">
+                <div class="flex-between" style="margin-bottom: var(--space-1);">
+                  <strong th:text="${f.companyOrDrive}">Oracle Financial Services</strong>
+                  <span class="badge badge-selected" th:text="'Rating: ' + ${f.rating} + ' / 5'">Rating: 5 / 5</span>
+                </div>
+                <div style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin-bottom: var(--space-2);">
+                  <span th:text="${f.submittedByRole}">STUDENT</span> &bull; By: <span th:text="${f.authorName}">Aarav Sharma</span> &bull; <span th:text="${#temporals.format(f.createdAt, 'dd MMM yyyy')}">11 Aug 2026</span>
+                </div>
+                <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: 0;" th:text="${f.feedbackText}">
+                  In-depth questions on concurrency, database locking mechanisms...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Academic Enterprise Portal</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>

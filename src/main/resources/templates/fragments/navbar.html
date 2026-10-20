@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <!-- Global Top Navbar Fragment -->
+  <header class="app-navbar" th:fragment="navbar(pageTitle)">
+    <div class="navbar-left">
+      <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <h2 class="navbar-title" th:text="${pageTitle != null ? pageTitle : 'Placement Portal'}">Placement Portal</h2>
+    </div>
+
+    <div class="navbar-right">
+      <div class="navbar-user">
+        <div class="user-avatar" th:text="${userName != null ? #strings.substring(userName, 0, 1) : 'U'}">U</div>
+        <div class="user-info">
+          <span class="user-display-name" th:text="${userName != null ? userName : 'Authenticated User'}">Authenticated User</span>
+          <span class="user-display-role" th:text="${userRole != null ? userRole : 'Role'}">Role</span>
+        </div>
+      </div>
+      <a th:href="@{/logout}" class="btn btn-secondary btn-sm">Sign Out</a>
+    </div>
+  </header>
+</body>
+</html>

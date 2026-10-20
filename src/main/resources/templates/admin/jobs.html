@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Job Audits — PlacementAI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Admin Console</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name">Dr. Rajesh Varma</div>
+        <span class="sidebar-user-role">Head, Placement Cell</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Admin Operations</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/admin/dashboard}" class="sidebar-link">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="students.html" th:href="@{/admin/students}" class="sidebar-link">Students</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="recruiters.html" th:href="@{/admin/recruiters}" class="sidebar-link">Recruiters</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="companies.html" th:href="@{/admin/companies}" class="sidebar-link">Companies</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/admin/jobs}" class="sidebar-link active">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applications.html" th:href="@{/admin/applications}" class="sidebar-link">Applications</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/admin/interviews}" class="sidebar-link">Interviews</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="feedback.html" th:href="@{/admin/feedback}" class="sidebar-link">Feedback</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="analytics.html" th:href="@{/admin/analytics}" class="sidebar-link">Analytics</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="../auth/login.html" th:href="@{/login}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Campus Job Audit</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar">RV</div>
+            <div class="user-info">
+              <span class="user-display-name">Dr. Rajesh Varma</span>
+              <span class="user-display-role">Institutional Administrator</span>
+            </div>
+          </div>
+          <a href="../auth/login.html" th:href="@{/login}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Master Campus Job Directory</h1>
+            <p>Audit campus recruitment drive compliance, eligibility benchmarks, departmental inclusion, and application timelines.</p>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <!-- Filter Bar -->
+        <div class="card" style="margin-bottom: var(--space-6);">
+          <div class="card-body" style="padding: var(--space-4) var(--space-6);">
+            <form method="get" th:action="@{/admin/jobs}" id="adminJobFilterForm">
+              <div class="flex-between" style="flex-wrap: wrap; gap: var(--space-4); align-items: center;">
+                <div class="flex" style="align-items: center; gap: var(--space-3); flex-wrap: wrap;">
+                  <label class="form-label" style="margin-bottom: 0; font-weight: 600;" for="adminJobStatusFilter">Status:</label>
+                  <select class="form-control" style="width: auto;" id="adminJobStatusFilter" name="status">
+                    <option value="" th:selected="${selectedStatus == null or selectedStatus == ''}">All Drives</option>
+                    <option value="OPEN" th:selected="${selectedStatus == 'OPEN'}">OPEN / Active Drives</option>
+                    <option value="CLOSED" th:selected="${selectedStatus == 'CLOSED'}">CLOSED / Archived</option>
+                  </select>
+
+                  <label class="form-label" style="margin-bottom: 0; font-weight: 600; margin-left: 12px;" for="adminJobDeptFilter">Department Filter:</label>
+                  <select class="form-control" style="width: auto;" id="adminJobDeptFilter" name="department">
+                    <option value="" th:selected="${selectedDept == null or selectedDept == ''}">All Disciplines</option>
+                    <option value="CSE" th:selected="${selectedDept == 'CSE'}">CSE - Computer Science &amp; Engineering</option>
+                    <option value="IT" th:selected="${selectedDept == 'IT'}">IT - Information Technology</option>
+                    <option value="ECE" th:selected="${selectedDept == 'ECE'}">ECE - Electronics &amp; Communication</option>
+                    <option value="EEE" th:selected="${selectedDept == 'EEE'}">EEE - Electrical &amp; Electronics</option>
+                    <option value="Mechanical" th:selected="${selectedDept == 'Mechanical'}">Mechanical Engineering</option>
+                    <option value="Civil" th:selected="${selectedDept == 'Civil'}">Civil Engineering</option>
+                  </select>
+
+                  <button type="submit" class="btn btn-primary btn-sm" id="adminJobFilterBtn" style="padding: 0.5rem 1.25rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    Filter
+                  </button>
+                  <a th:href="@{/admin/jobs}" class="btn btn-secondary btn-sm" id="adminJobResetBtn" style="text-decoration: none; padding: 0.5rem 1rem;">Reset</a>
+                </div>
+
+                <div class="flex" style="gap: var(--space-2); align-items: center;">
+                  <input type="text" class="form-control" id="adminJobSearch" name="query" th:value="${searchQuery}" placeholder="Search by role or company..." style="width: 260px;">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Global Jobs Table Card -->
+        <div class="card">
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table table-striped" id="adminJobMasterTable">
+                <thead>
+                  <tr>
+                    <th>Company</th>
+                    <th>Position</th>
+                    <th>Eligible Departments</th>
+                    <th>Min CGPA</th>
+                    <th>Package</th>
+                    <th>Status</th>
+                    <th>Application Deadline</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:if="${#lists.isEmpty(jobs)}">
+                    <td colspan="8" style="text-align: center; color: var(--color-text-muted); padding: var(--space-6);">No job postings recorded in database yet.</td>
+                  </tr>
+                  <tr id="noAdminJobMatchRow" style="display: none;">
+                    <td colspan="8" style="text-align: center; padding: 2.5rem; color: #64748b;">
+                      <div style="font-weight: 600; font-size: var(--font-size-base); margin-bottom: 6px;">No recruitment drives match your filter criteria.</div>
+                      <div style="font-size: var(--font-size-xs); margin-bottom: 12px;">Try selecting different options or clear search parameters.</div>
+                      <a th:href="@{/admin/jobs}" class="btn btn-secondary btn-sm" style="text-decoration: none;">Reset All Filters</a>
+                    </td>
+                  </tr>
+                  <tr class="admin-job-row" th:each="job : ${jobs}"
+                      th:data-status="${job.status}"
+                      th:data-dept="${job.allowedBranches}">
+                    <td><strong th:text="${job.company != null ? job.company.name : 'Company'}">Microsoft Corporation</strong></td>
+                    <td th:text="${job.title}">Software Engineer</td>
+                    <td th:text="${job.allowedBranches}">CSE, CE, ECE, EEE</td>
+                    <td th:text="${job.minCgpa}">7.00</td>
+                    <td><strong th:text="${job.packageCtc}">24.0 LPA</strong></td>
+                    <td>
+                      <span class="badge"
+                            th:classappend="${job.status == 'OPEN'} ? 'badge-selected' : 'badge-rejected'"
+                            th:text="${job.status}">Active</span>
+                    </td>
+                    <td th:text="${job.deadline != null ? #temporals.format(job.deadline, 'dd MMM yyyy') : 'No Deadline'}">20 Sep 2026</td>
+                    <td>
+                      <div class="table-actions">
+                        <form method="post" th:action="@{/admin/jobs/toggle-status}" style="display:inline;">
+                          <input type="hidden" name="jobId" th:value="${job.id}">
+                          <button type="submit" class="btn btn-secondary btn-sm" th:text="${job.status == 'OPEN' ? 'Close Drive' : 'Reopen Drive'}">Toggle</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Institutional Administrator Console</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js?v=2.4}"></script>
+</body>
+</html>

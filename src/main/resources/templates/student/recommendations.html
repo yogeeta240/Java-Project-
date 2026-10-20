@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Recommendations — PlacementAI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Student Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name" th:text="${student != null && student.user != null ? student.user.fullName : 'Student'}">Aarav Sharma</div>
+        <span class="sidebar-user-role" th:text="${student != null && student.rollNumber != null ? ('Roll: ' + student.rollNumber) : 'Student'}">Student &bull; CSE</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Student Menu</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/student/dashboard}" class="sidebar-link">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="profile.html" th:href="@{/student/profile}" class="sidebar-link">My Profile</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/student/jobs}" class="sidebar-link">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applications.html" th:href="@{/student/applications}" class="sidebar-link">My Applications</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/student/interviews}" class="sidebar-link">Interviews</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="recommendations.html" th:href="@{/student/recommendations}" class="sidebar-link active">Recommendations</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="feedback.html" th:href="@{/student/feedback}" class="sidebar-link">Feedback</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="/logout" th:href="@{/logout}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">AI Matching Engine</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar" th:text="${student != null ? student.avatarInitials : 'ST'}">AS</div>
+            <div class="user-info">
+              <span class="user-display-name" th:text="${student != null && student.user != null ? student.user.fullName : 'Student'}">Aarav Sharma</span>
+              <span class="user-display-role" th:text="${student != null && student.rollNumber != null ? ('Roll: ' + student.rollNumber) : ''}">Roll: 2022CSE041</span>
+            </div>
+          </div>
+          <a href="/logout" th:href="@{/logout}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Job Recommendations</h1>
+            <p>Smart skill compatibility scores computed by comparing your verified resume skill set and academic CGPA against corporate campus drive requirements.</p>
+          </div>
+        </div>
+
+        <!-- AI Engine Explanatory Banner -->
+        <div class="alert alert-info flex-between" style="margin-bottom: var(--space-8);">
+          <span>Algorithm Breakdown: Match scores reflect verified skills overlap (65%), academic CGPA merit (25%), and departmental eligibility (10%).</span>
+        </div>
+
+        <!-- Recommendations Grid -->
+        <div class="grid grid-2">
+          <div th:if="${#lists.isEmpty(recommendations)}" class="card" style="grid-column: span 2; text-align: center; padding: var(--space-8);">
+            <h3>No Active Recommendations</h3>
+            <p style="color: var(--color-text-secondary);">There are currently no open campus drives matching your profile. Check back soon!</p>
+          </div>
+
+          <div class="card" th:each="rec : ${recommendations}">
+            <div class="card-header">
+              <div>
+                <h3 style="margin-bottom: 2px;" th:text="${rec.job.title}">Software Engineer</h3>
+                <div style="font-size: var(--font-size-sm); color: var(--color-primary); font-weight: 600;" th:text="${rec.job.company.name}">Microsoft Corporation</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: var(--font-size-2xl); font-weight: 700; line-height: 1;"
+                     th:styleappend="${rec.score >= 80 ? 'color: #059669;' : 'color: var(--color-primary-accent);'}"
+                     th:text="${rec.score + '%'}">92%</div>
+                <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">Match Score</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div style="margin-bottom: var(--space-3);" th:if="${rec.job.skillsRequired != null}">
+                <div style="font-size: var(--font-size-xs); font-weight: 600; color: var(--color-text-secondary); margin-bottom: 4px;">Required Skills:</div>
+                <div>
+                  <span class="tag tag-matched" th:each="skill : ${#strings.arraySplit(rec.job.skillsRequired, ',')}" th:text="${#strings.trim(skill)}">Java</span>
+                </div>
+              </div>
+
+              <div style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin-bottom: var(--space-3);">
+                <span>Package: <strong th:text="${rec.job.packageCtc}">24.5 LPA</strong></span> &bull;
+                <span>Location: <strong th:text="${rec.job.location}">Bangalore</strong></span> &bull;
+                <span>Min CGPA: <strong th:text="${rec.job.minCgpa}">7.5</strong></span>
+              </div>
+
+              <div style="background-color: var(--color-bg); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--color-border); margin-bottom: var(--space-4);">
+                <div style="font-size: var(--font-size-xs); font-weight: 600; color: var(--color-text-primary); margin-bottom: 2px;">Recommendation Analysis:</div>
+                <p style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-bottom: 0;" th:text="${rec.job.description}">
+                  Role requirements and skills evaluated against your profile.
+                </p>
+                <div style="margin-top: 4px;">
+                  <span class="badge" th:classappend="${rec.eligible ? 'badge-selected' : 'badge-rejected'}"
+                        th:text="${rec.eligible ? 'Eligible for Drive' : 'Benchmark Criteria Pending'}">Eligible</span>
+                </div>
+              </div>
+
+              <a href="job-details.html" th:href="@{/student/job-details(id=${rec.job.id})}" class="btn btn-primary btn-block">View Job &amp; Apply</a>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Academic Enterprise Portal</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Profile — PlacementAI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Recruiter Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name" th:text="${recruiter != null && recruiter.user != null ? recruiter.user.fullName : (recruiterName != null ? recruiterName : 'Recruiter')}">Recruiter Name</div>
+        <span class="sidebar-user-role" th:text="${company != null ? ('Recruiter • ' + company.name) : (recruiter != null && recruiter.company != null ? ('Recruiter • ' + recruiter.company.name) : 'Recruiter')}">Recruiter &bull; Corporate Partner</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Recruiter Menu</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/recruiter/dashboard}" class="sidebar-link">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="profile.html" th:href="@{/recruiter/profile}" class="sidebar-link active">Company Profile</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/recruiter/jobs}" class="sidebar-link">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="create-job.html" th:href="@{/recruiter/create-job}" class="sidebar-link">Create Job</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applicants.html" th:href="@{/recruiter/applicants}" class="sidebar-link">Applicants</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/recruiter/interviews}" class="sidebar-link">Interviews</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="/logout" th:href="@{/logout}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Partner Organization Profile</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar" th:text="${recruiter != null && recruiter.user != null && recruiter.user.fullName != null && !recruiter.user.fullName.isEmpty() ? recruiter.user.fullName.substring(0, 1).toUpperCase() : 'R'}">R</div>
+            <div class="user-info">
+              <span class="user-display-name" th:text="${recruiter != null && recruiter.user != null ? recruiter.user.fullName : (recruiterName != null ? recruiterName : 'Recruiter')}">Recruiter Name</span>
+              <span class="user-display-role" th:text="${recruiter != null && recruiter.designation != null ? recruiter.designation : 'Campus Talent Partner'}">Lead Campus Talent Partner</span>
+            </div>
+          </div>
+          <a href="/logout" th:href="@{/logout}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <!-- Success Alert -->
+        <div class="alert alert-success flex-between" th:if="${param.updated != null}" style="margin-bottom: var(--space-6);">
+          <span>Company &amp; recruiter profile information saved successfully!</span>
+          <button type="button" class="alert-dismiss-btn" style="background:none;border:none;cursor:pointer;color:inherit;font-weight:bold;">&times;</button>
+        </div>
+
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Company Information &amp; Branding</h1>
+            <p>Maintain your verified enterprise corporate identity, industry categorization, and campus contact credentials.</p>
+          </div>
+          <div class="page-actions">
+            <button type="submit" form="recruiterProfileForm" class="btn btn-primary">Save Profile Changes</button>
+          </div>
+        </div>
+
+        <!-- Live Recruitment Drives & Interview Activity Metrics -->
+        <div class="dashboard-items-vertical" style="margin-bottom: var(--space-8);">
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Active Campus Drives</div>
+              <div class="stat-helper">Jobs posted by your enterprise</div>
+            </div>
+            <div class="stat-value" th:text="${myJobsCount != null ? myJobsCount : 0}">0</div>
+          </div>
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Registered Applicants</div>
+              <div class="stat-helper">Students applied to your drives</div>
+            </div>
+            <div class="stat-value" th:text="${applicantCount != null ? applicantCount : 0}">0</div>
+          </div>
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Shortlisted Candidates</div>
+              <div class="stat-helper">Screened for technical evaluation</div>
+            </div>
+            <div class="stat-value" th:text="${shortlistedCount != null ? shortlistedCount : 0}">0</div>
+          </div>
+          <div class="stat-card stat-card-vertical">
+            <div class="stat-info">
+              <div class="stat-label">Upcoming Interviews</div>
+              <div class="stat-helper">Technical assessments scheduled</div>
+            </div>
+            <div class="stat-value" th:text="${upcomingInterviewsCount != null ? upcomingInterviewsCount : 0}">0</div>
+          </div>
+        </div>
+
+        <form method="post" th:action="@{/recruiter/profile}" id="recruiterProfileForm">
+          <div class="grid grid-3">
+            <div style="grid-column: span 2;">
+              <div class="card" style="margin-bottom: var(--space-8);">
+                <div class="card-header">
+                  <h3>Corporate Overview</h3>
+                  <span class="badge badge-selected">Verified Employer</span>
+                </div>
+                <div class="card-body">
+                  <div class="form-row">
+                    <div class="form-col-6">
+                      <div class="form-group">
+                        <label class="form-label required" for="companyName">Company Name</label>
+                        <input type="text" id="companyName" name="companyName" class="form-control" th:value="${company != null ? company.name : ''}" placeholder="e.g. Microsoft Corporation" required>
+                      </div>
+                    </div>
+                    <div class="form-col-6">
+                      <div class="form-group">
+                        <label class="form-label required" for="industry">Industry Sector</label>
+                        <input type="text" id="industry" name="industry" class="form-control" th:value="${company != null ? company.industry : 'Cloud Computing & Software'}" placeholder="e.g. Software, FinTech, E-Commerce">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-col-6">
+                      <div class="form-group">
+                        <label class="form-label" for="website">Official Website URL</label>
+                        <input type="url" id="website" name="website" class="form-control" th:value="${company != null ? company.website : ''}" placeholder="https://careers.company.com">
+                      </div>
+                    </div>
+                    <div class="form-col-6">
+                      <div class="form-group">
+                        <label class="form-label" for="location">Primary Development Centers</label>
+                        <input type="text" id="location" name="location" class="form-control" th:value="${company != null ? company.location : ''}" placeholder="e.g. Bangalore, Hyderabad, Noida">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="description">Company Mission &amp; Overview</label>
+                    <textarea id="description" name="companyDescription" class="form-control" rows="4" placeholder="Briefly describe your company vision, campus culture, and engineering opportunities..." th:text="${company != null ? company.description : ''}"></textarea>
+                  </div>
+
+                  <div class="form-actions" style="margin-top: var(--space-4);">
+                    <button type="submit" class="btn btn-primary">Update Information</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recruiter Contact Card -->
+            <div>
+              <div class="card">
+                <div class="card-header">
+                  <h4>Talent Lead Contact</h4>
+                </div>
+                <div class="card-body" style="font-size: var(--font-size-sm);">
+                  <div class="form-group">
+                    <label class="form-label">Recruiter Full Name</label>
+                    <input type="text" class="form-control" th:value="${recruiter != null && recruiter.user != null ? recruiter.user.fullName : (recruiterName != null ? recruiterName : 'Recruiter')}" readonly>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Corporate Email</label>
+                    <input type="email" class="form-control" th:value="${recruiter != null && recruiter.user != null ? recruiter.user.email : ''}" readonly>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Contact Phone</label>
+                    <input type="tel" name="phone" class="form-control" th:value="${recruiter != null ? recruiter.phone : ''}" placeholder="+91 99887 76655">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Designation / Title</label>
+                    <input type="text" name="designation" class="form-control" th:value="${recruiter != null ? recruiter.designation : 'Campus Talent Partner'}" placeholder="e.g. Campus Talent Acquisition Partner">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Campus Accreditation Status</label>
+                    <div>
+                      <span class="badge badge-selected">Authorized Tier-1 Partner</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </form>
+
+        <!-- Active Job Drives & Live Applicants Summary -->
+        <div class="card" style="margin-top: var(--space-8);">
+          <div class="card-header">
+            <h3>Your Campus Drives &amp; Student Registration Pipeline</h3>
+            <a href="create-job.html" th:href="@{/recruiter/create-job}" class="btn btn-secondary btn-sm">Create New Job</a>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Job Title</th>
+                    <th>Role Type</th>
+                    <th>Package CTC</th>
+                    <th>Eligible Branches</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:if="${#lists.isEmpty(jobs)}">
+                    <td colspan="7" style="text-align: center; color: var(--color-text-muted); padding: var(--space-6);">
+                      No campus recruitment drives created yet. Click "Create New Job" to post an opportunity for students.
+                    </td>
+                  </tr>
+                  <tr th:each="j : ${jobs}">
+                    <td><strong th:text="${j.title}">Software Engineer</strong></td>
+                    <td th:text="${j.roleType}">Full-time</td>
+                    <td th:text="${j.packageCtc}">24.0 LPA</td>
+                    <td th:text="${j.allowedBranches}">CSE, IT</td>
+                    <td th:text="${j.deadline != null ? #temporals.format(j.deadline, 'dd MMM yyyy') : 'Open'}">30 Oct 2026</td>
+                    <td><span class="badge badge-selected" th:text="${j.status}">Active</span></td>
+                    <td>
+                      <a href="applicants.html" th:href="@{/recruiter/applicants(jobId=${j.id})}" class="btn btn-primary btn-sm">View Applicants</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Recruiter Enterprise Portal</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js?v=2.5}"></script>
+</body>
+</html>

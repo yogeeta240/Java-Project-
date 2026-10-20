@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interviews — PlacementAI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="../../static/css/forms.css" th:href="@{/css/forms.css}">
+  <link rel="stylesheet" href="../../static/css/tables.css" th:href="@{/css/tables.css}">
+  <link rel="stylesheet" href="../../static/css/dashboard.css" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" href="../../static/css/responsive.css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">PM</div>
+        <div>
+          <div class="brand-text">PlacementAI</div>
+          <div class="brand-portal">Student Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-name" th:text="${student != null && student.user != null ? student.user.fullName : 'Student'}">Aarav Sharma</div>
+        <span class="sidebar-user-role" th:text="${student != null && student.rollNumber != null ? ('Roll: ' + student.rollNumber) : 'Student'}">Student &bull; CSE</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <div class="sidebar-heading">Student Menu</div>
+        </li>
+        <li class="sidebar-item">
+          <a href="dashboard.html" th:href="@{/student/dashboard}" class="sidebar-link">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="profile.html" th:href="@{/student/profile}" class="sidebar-link">My Profile</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="jobs.html" th:href="@{/student/jobs}" class="sidebar-link">Jobs</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="applications.html" th:href="@{/student/applications}" class="sidebar-link">My Applications</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="interviews.html" th:href="@{/student/interviews}" class="sidebar-link active">Interviews</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="recommendations.html" th:href="@{/student/recommendations}" class="sidebar-link">Recommendations</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="feedback.html" th:href="@{/student/feedback}" class="sidebar-link">Feedback</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="/logout" th:href="@{/logout}" class="sidebar-logout-btn" style="text-decoration: none; justify-content: center;">
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-navbar">
+        <div class="navbar-left">
+          <button type="button" class="navbar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h2 class="navbar-title">Interview Schedules</h2>
+        </div>
+
+        <div class="navbar-right">
+          <div class="navbar-user">
+            <div class="user-avatar" th:text="${student != null ? student.avatarInitials : 'ST'}">AS</div>
+            <div class="user-info">
+              <span class="user-display-name" th:text="${student != null && student.user != null ? student.user.fullName : 'Student'}">Aarav Sharma</span>
+              <span class="user-display-role" th:text="${student != null && student.rollNumber != null ? ('Roll: ' + student.rollNumber) : ''}">Roll: 2022CSE041</span>
+            </div>
+          </div>
+          <a href="/logout" th:href="@{/logout}" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="page-header">
+          <div class="page-header-info">
+            <h1>Campus Interview Schedule</h1>
+            <p>Access your scheduled technical assessments, virtual interview rooms, and historical interview logs.</p>
+          </div>
+        </div>
+
+        <!-- Upcoming Interviews Section -->
+        <div class="card" style="margin-bottom: var(--space-8);">
+          <div class="card-header">
+            <h3>Upcoming Interviews</h3>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Company</th>
+                    <th>Position</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Type</th>
+                    <th>Meeting / Venue</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:if="${#lists.isEmpty(interviews)}">
+                    <td colspan="8" style="text-align: center; padding: 2rem; color: #64748b;">
+                      No upcoming interview rounds scheduled yet.
+                    </td>
+                  </tr>
+                  <tr th:each="slot : ${interviews}" th:if="${slot.status != 'COMPLETED'}">
+                    <td><strong th:text="${slot.job != null && slot.job.company != null ? slot.job.company.name : 'Company'}">Microsoft Corporation</strong></td>
+                    <td th:text="${slot.job != null ? slot.job.title : 'Software Engineer'}">Software Engineer</td>
+                    <td th:text="${slot.scheduledTime != null ? #temporals.format(slot.scheduledTime, 'dd MMM yyyy') : 'TBD'}">12 Sep 2026</td>
+                    <td th:text="${slot.scheduledTime != null ? #temporals.format(slot.scheduledTime, 'hh:mm a') : 'TBD'}">10:30 AM</td>
+                    <td th:text="${slot.roundName}">Technical Round 1</td>
+                    <td th:text="${slot.meetingLinkOrVenue}">Microsoft Teams (Virtual)</td>
+                    <td><span class="badge badge-scheduled" th:text="${slot.status}">Confirmed</span></td>
+                    <td>
+                      <a th:if="${slot.meetingLinkOrVenue != null && slot.meetingLinkOrVenue.startsWith('http')}"
+                         th:href="${slot.meetingLinkOrVenue}" target="_blank" class="btn btn-primary btn-sm">Join Meeting</a>
+                      <span th:unless="${slot.meetingLinkOrVenue != null && slot.meetingLinkOrVenue.startsWith('http')}"
+                            class="btn btn-secondary btn-sm">In Person</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Past Interviews Section -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Past Interviews</h3>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Company</th>
+                    <th>Position</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Outcome</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="slot : ${interviews}" th:if="${slot.status == 'COMPLETED'}">
+                    <td><strong th:text="${slot.job != null && slot.job.company != null ? slot.job.company.name : 'Company'}">Oracle</strong></td>
+                    <td th:text="${slot.job != null ? slot.job.title : 'Engineer'}">Software Engineer</td>
+                    <td th:text="${slot.scheduledTime != null ? #temporals.format(slot.scheduledTime, 'dd MMM yyyy') : 'Recent'}">10 Aug 2026</td>
+                    <td th:text="${slot.roundName}">Technical &amp; HR Round</td>
+                    <td><span class="badge badge-selected" th:text="${slot.status}">Completed</span></td>
+                    <td>
+                      <a href="feedback.html" th:href="@{/student/feedback}" class="btn btn-secondary btn-sm">Submit Feedback</a>
+                    </td>
+                  </tr>
+                  <tr th:if="${#lists.isEmpty(interviews)}">
+                    <td colspan="6" style="text-align: center; padding: 2rem; color: #64748b;">
+                      No historical interviews recorded.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          <span>AI-Powered Placement Management System</span>
+          <span> &bull; University Training &amp; Placement Cell</span>
+        </div>
+        <div>
+          <span>Confidential &bull; Academic Enterprise Portal</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>
